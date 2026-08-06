@@ -4,8 +4,8 @@
 
 | Gate | Result | Detail |
 | --- | --- | --- |
-| no-black-screen | PASS | meanLuminance=0.3068 (gate >=0.02) |
-| not-flat-render | PASS | uniqueColors=68 (gate >=32) |
+| no-black-screen | PASS | meanLuminance=0.3144 (gate >=0.02) |
+| not-flat-render | PASS | uniqueColors=73 (gate >=32) |
 | no-console-errors | PASS | errors=0 |
 | fps-acceptable | PASS | fps=0 (gate >=30; 0 = not measured in headless) |
 | game-booted | PASS | frame=15 |

@@ -28,7 +28,7 @@ export interface Affix {
 }
 
 export interface WeaponProfile {
-  archetype: 'blade' | 'maul' | 'spear' | 'censer';
+  archetype: 'blade' | 'maul' | 'spear' | 'censer' | 'glaive';
   baseDamage: number;
   swingTime: number;
   reach: number;

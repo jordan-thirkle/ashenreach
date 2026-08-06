@@ -39,6 +39,9 @@ export function buildAssetCatalog(): ViewerModel[] {
     { id: 'censer', name: 'Ember Censer', category: 'weapon',
       build: () => buildWeapon('censer', PALETTE.palegold),
       note: 'Pyre damage type. Emits a procedural glow.' },
+    { id: 'glaive', name: 'Moorcutter Glaive', category: 'weapon',
+      build: () => buildWeapon('glaive', PALETTE.rustBright),
+      note: 'Long polearm. Wide sweeping arc, medium speed.' },
   ];
 
   for (const e of ENEMIES) {

@@ -282,6 +282,121 @@ export class AudioEngine {
     }
   }
 
+  // ---- New procedural one-shots (AGENT-C additions) ----
+
+  /**
+   * embertideSwell(level: 0..10) — a rising, ominous drone whose pitch and
+   * lowpass cutoff climb with `level`, ramped over ~1.5s. Intended for the
+   * Embertide warning/onset beat.
+   *
+   * CALL SITE FOR GAME.TS (do not modify other files now):
+   *   In the Embertide system, when a tide swell begins, call:
+   *     audio.embertideSwell(currentTideLevel)
+   *   e.g. from the Embertide tick/onset handler in Embertide.ts. The existing
+   *   `embertideRise(level)` alias already plays the ambient 'embertide' swell;
+   *   this is a separate, more aggressive on-beat drone you can layer on top.
+   */
+  embertideSwell(level: number): void {
+    if (!this.started || !this.ctx || !this.sfxBus) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime + 0.02;
+    const lvl = Math.max(0, Math.min(10, level)) / 10; // normalise to 0..1
+    const dur = 1.5;
+
+    // Fundamental + a fifth, both rising with level.
+    const base = 55 + lvl * 16;                 // 55..71 Hz
+    const end = base * (1.7 + lvl * 0.9);       // higher level => higher crest
+
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.34, t + dur * 0.72);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.4);
+
+    // Resonant lowpass that opens up as the swell climbs.
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.Q.value = 7;
+    lp.frequency.setValueAtTime(170 + lvl * 120, t);
+    lp.frequency.exponentialRampToValueAtTime(1400 + lvl * 1700, t + dur);
+
+    const o1 = ctx.createOscillator();
+    o1.type = 'sawtooth';
+    o1.frequency.setValueAtTime(base, t);
+    o1.frequency.exponentialRampToValueAtTime(Math.max(20, end), t + dur);
+
+    const o2 = ctx.createOscillator();
+    o2.type = 'sine';
+    o2.frequency.setValueAtTime(base * 1.5, t);
+    o2.frequency.exponentialRampToValueAtTime(Math.max(30, end * 1.5), t + dur);
+    o2.detune.value = 7;
+
+    o1.connect(lp);
+    o2.connect(lp);
+    lp.connect(g).connect(this.sfxBus);
+    o1.start(t);
+    o2.start(t);
+    o1.stop(t + dur + 0.5);
+    o2.stop(t + dur + 0.5);
+  }
+
+  /**
+   * soulBankChime() — a soft two/three-note bell (sine partials with quick
+   * decay) played when a soul is banked at a cairn. Distinct from the existing
+   * 'soul-bank' fanfare: this is the smaller "received" chime.
+   */
+  soulBankChime(): void {
+    if (!this.started || !this.ctx || !this.sfxBus) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime + 0.02;
+    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5 — soft ascending bell
+    const partials = [1, 2.01, 2.99, 4.21]; // inharmonic bell partials
+    notes.forEach((f, i) => {
+      const nt = t + i * 0.11;
+      partials.forEach((p, k) => {
+        const o = ctx.createOscillator();
+        o.type = 'sine';
+        o.frequency.value = f * p;
+        const peak = 0.15 / (k + 1);
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, nt);
+        g.gain.exponentialRampToValueAtTime(peak, nt + 0.005);
+        g.gain.exponentialRampToValueAtTime(0.0001, nt + 0.9 - k * 0.15);
+        o.connect(g).connect(this.sfxBus as GainNode);
+        o.start(nt);
+        o.stop(nt + 1.0);
+      });
+    });
+  }
+
+  /**
+   * parryClang() — short metallic clang for a successful parry: a bandpassed
+   * noise transient plus a few inharmonic sine partials (the "ring" of struck
+   * metal) with a fast decay. Complements the existing `parrySuccess()` sparkle
+   * — call this for the harder, more percussive clang.
+   */
+  parryClang(): void {
+    if (!this.started || !this.ctx || !this.sfxBus) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime + 0.001;
+    // Metallic noise transient through a resonant bandpass.
+    this.noiseHit(0.3, 0.12, t, 'bandpass', 3200, 900, 3.2);
+    // Inharmonic partials give the metallic ring.
+    const partials = [2400, 3170, 4300, 5600];
+    partials.forEach((f, i) => {
+      const o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = f * (1 + i * 0.001);
+      const g = ctx.createGain();
+      const peak = 0.14 / (i + 1);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(peak, t + 0.003);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18 - i * 0.02);
+      o.connect(g).connect(this.sfxBus as GainNode);
+      o.start(t);
+      o.stop(t + 0.22);
+    });
+  }
+
   /** Wind + distant ash. Runs forever once started. */
   startAmbient(): void {
     if (!this.ctx || !this.ambBus || this.ambientSrc) return;

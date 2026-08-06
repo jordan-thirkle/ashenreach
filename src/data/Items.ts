@@ -62,6 +62,16 @@ export const WEAPONS: WeaponDef[] = [
     profile: { archetype: 'censer', baseDamage: 19, swingTime: 0.44, reach: 3.2, arc: 2.4, stagger: 0.6, damageType: 'frost' },
     flavor: 'Cold enough that the ash freezes into glass where it passes.',
   },
+  {
+    defId: 'w_moorcutter', name: 'Moorcutter Glaive', icon: 'icon_glaive',
+    profile: { archetype: 'glaive', baseDamage: 38, swingTime: 0.55, reach: 3.6, arc: 2.6, stagger: 0.95, damageType: 'physical' },
+    flavor: 'A reaping blade on a warden haft. It cuts the whole line, not the man.',
+  },
+  {
+    defId: 'w_hollowreap', name: 'Hollow Reaper', icon: 'icon_glaive',
+    profile: { archetype: 'glaive', baseDamage: 41, swingTime: 0.58, reach: 3.8, arc: 2.7, stagger: 1.05, damageType: 'rot' },
+    flavor: 'Swung once at the barrow mouth. Nothing that stood there stands now.',
+  },
 ];
 
 export interface GearDef {

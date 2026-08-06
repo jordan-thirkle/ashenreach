@@ -3,6 +3,7 @@ import { PALETTE } from '../core/Palette';
 import { Terrain, BIOMES, WORLD_HALF, SEA_LEVEL } from './Terrain';
 import { buildMeshLibrary, type MeshLibrary } from './Meshes';
 import { scatterChunk, type ScatterInstance } from './WorldGen';
+import { AmbientRigs } from './AmbientRigs';
 
 const CHUNK = 70;
 const VIEW_CHUNKS = 5;
@@ -70,6 +71,7 @@ export class WorldRenderer {
   private hemi: THREE.HemisphereLight;
   private quality: number;
   private chunkRes: number;
+  private ambient: AmbientRigs;
   private t = 0;
 
   constructor(scene: THREE.Scene, terrain: Terrain, seed: string, quality: 'low' | 'medium' | 'high') {
@@ -79,6 +81,7 @@ export class WorldRenderer {
     this.quality = quality === 'high' ? 1 : quality === 'medium' ? 0.6 : 0.32;
     this.chunkRes = quality === 'high' ? 28 : quality === 'medium' ? 20 : 14;
     this.lib = buildMeshLibrary();
+    this.ambient = new AmbientRigs(scene, terrain);
 
     this.terrainMat = new THREE.MeshStandardMaterial({
       vertexColors: true, roughness: 0.97, metalness: 0.0, flatShading: true,
@@ -306,9 +309,11 @@ export class WorldRenderer {
       }
     }
     ap.needsUpdate = true;
+    this.ambient.update(dt, playerPos);
   }
 
   dispose(): void {
+    this.ambient.dispose();
     for (const c of this.chunks.values()) this.disposeChunk(c);
     this.chunks.clear();
   }

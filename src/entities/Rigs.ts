@@ -303,6 +303,32 @@ export function buildWeapon(archetype: string, tint: number): THREE.Group {
       g.add(emberGlow);
       break;
     }
+    case 'glaive': {
+      // Long polearm: slim shaft with a broad, canted cleaver head.
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.03, 1.95, 6), wood);
+      shaft.position.y = 0.62;
+      g.add(shaft);
+      const socket = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.042, 0.16, 6), accent);
+      socket.position.y = 1.58;
+      g.add(socket);
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.86, 0.19), steel);
+      blade.position.set(0.05, 2.02, 0);
+      blade.rotation.z = -0.24;
+      g.add(blade);
+      const belly = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.34, 0.3), steel);
+      belly.position.set(0.14, 1.86, 0);
+      belly.rotation.z = -0.55;
+      g.add(belly);
+      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.34, 4), steel);
+      tip.position.set(0.16, 2.52, 0);
+      tip.rotation.z = -0.24;
+      g.add(tip);
+      const hook = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.24, 0.05), accent);
+      hook.position.set(-0.11, 1.76, 0);
+      hook.rotation.z = 0.7;
+      g.add(hook);
+      break;
+    }
     default: {
       const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.034, 0.3, 6), wood);
       grip.position.y = 0.15;
