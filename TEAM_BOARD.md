@@ -43,12 +43,16 @@ PLATFORM: Windows (git-bash / MSYS). Terminal uses POSIX syntax.
 - T1-A: src/world/AmbientRigs.ts (new) + WorldRenderer wiring. Fox (animated) + CesiumMan statues in world.
 - T1-B: glaive weapon — Items.ts (2 weapons), Rigs.ts (case), catalog.ts viewer entry. Combat.ts reads profile generically (no edit needed).
 - T1-C: Audio.ts — embertideSwell, soulBankChime, parryClang.
-- Integration: tsc clean, 28/28 vitest, build OK, e2e VERDICT=PASS. Pushed a239395. Redeploying.
+- T1 integration: tsc clean, 28/28 vitest, build OK, e2e PASS. Pushed a239395, deployed.
+- T2-B: Colossus 3-phase (Rigs.ts setColossusPhaseVisual + EnemyAI.ts BOSS_PHASES/isColossus/animateColossus). Clean tsc.
+- T2-C: MobileControls + Hud safe-area + joystick deadzone/lerp. Clean tsc.
+- T2-A (RE-DONE by PM after silent agent failure): quests q_ashbridge + q_wakecall + c_wakecall codex in Quests.ts.
+- T2 integration: tsc clean, 28/28 vitest, build OK, e2e PASS. Pushed d6d15d5. Redeploying.
 
-## Tier 2 (next — pending deploy confirm)
-- T2-A: Quest depth — 2 new side quests + codex entries (src/data/Quests.ts, src/systems/Quests.ts)
-- T2-B: Boss phases — Colossus 3-phase escalation (src/entities/Rigs.ts colossus, src/systems/EnemyAI.ts)
-- T2-C: Mobile polish — on-screen joystick tuning + safe-area (src/ui/MobileControls.ts, src/ui/Hud.ts)
+## Tier 3 (IN FLIGHT — autonomous, per user "keep developing")
+- T3-A: Second biome palette variant (winter slate/peat) — src/world/Terrain.ts, src/world/WorldRenderer.ts
+- T3-B: Relic inventory + equip UI — src/systems/Inventory.ts, src/ui/Hud.ts
+- T3-C: Speedrun/score leaderboard (localStorage) — src/systems/Scores.ts
 
 ## Integration batch (PM, after agents return)
 - Full `npm run build` + `npx vitest run` + e2e critic

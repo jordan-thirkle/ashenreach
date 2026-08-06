@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { PALETTE } from '../core/Palette';
-import { Terrain, BIOMES, WORLD_HALF, SEA_LEVEL } from './Terrain';
+import { paletteFor, type BiomeVariant, type Palette } from '../core/Palette';
+import { Terrain, biomeTable, WORLD_HALF, SEA_LEVEL } from './Terrain';
 import { buildMeshLibrary, type MeshLibrary } from './Meshes';
 import { scatterChunk, type ScatterInstance } from './WorldGen';
 import { AmbientRigs } from './AmbientRigs';
@@ -17,7 +17,16 @@ interface Chunk {
 }
 
 /** Vertex-coloured terrain: biome colour baked per vertex, no texture fetch. */
-function buildChunkGeometry(terrain: Terrain, cx: number, cz: number, res: number): THREE.BufferGeometry {
+function buildChunkGeometry(
+  terrain: Terrain, cx: number, cz: number, res: number,
+  variant: BiomeVariant = 'highland',
+): THREE.BufferGeometry {
+  const pal = paletteFor(variant);
+  const table = biomeTable(variant);
+  const winter = variant === 'winter';
+  const ashCol = new THREE.Color(pal.ash);
+  const mireCol = new THREE.Color(pal.mire);
+  const frostCol = new THREE.Color(pal.frost);
   const geo = new THREE.PlaneGeometry(CHUNK, CHUNK, res, res);
   geo.rotateX(-Math.PI / 2);
   const pos = geo.attributes.position as THREE.BufferAttribute;
@@ -32,7 +41,7 @@ function buildChunkGeometry(terrain: Terrain, cx: number, cz: number, res: numbe
     pos.setY(i, h);
 
     const biome = terrain.biome(wx, wz);
-    const prof = BIOMES[biome];
+    const prof = table[biome];
     const slope = terrain.slope(wx, wz);
 
     c.setHex(prof.ground);
@@ -42,8 +51,16 @@ function buildChunkGeometry(terrain: Terrain, cx: number, cz: number, res: numbe
     c.lerp(c2, t);
 
     // Height tint: peaks catch ash, hollows go dark.
-    if (h > 26) c.lerp(new THREE.Color(PALETTE.ash), Math.min(0.55, (h - 26) / 34));
-    if (h < SEA_LEVEL + 1) c.lerp(new THREE.Color(PALETTE.mire), 0.4);
+    if (h > 26) c.lerp(ashCol, Math.min(0.55, (h - 26) / 34));
+    if (h < SEA_LEVEL + 1) c.lerp(mireCol, 0.4);
+
+    if (winter) {
+      // Snow settles on the flats and spares the steep faces; a thin frost wash
+      // over everything else keeps the whole read cold without going blue-neon.
+      const settle = Math.max(0, 1 - slope * 2.6) * (0.32 + Math.min(0.34, Math.max(0, h - 8) / 46));
+      c.lerp(ashCol, Math.min(0.7, settle));
+      c.lerp(frostCol, 0.14);
+    }
 
     // Micro variation stops the flat-shaded plane reading as plastic.
     const v = 0.9 + ((Math.sin(wx * 3.1) + Math.cos(wz * 2.7)) * 0.5 + 0.5) * 0.2;
@@ -73,11 +90,29 @@ export class WorldRenderer {
   private chunkRes: number;
   private ambient: AmbientRigs;
   private t = 0;
+  /** Active biome variant - drives terrain tint, fog, sky and light colour. */
+  readonly variant: BiomeVariant;
+  private pal: Palette;
+  private baseFog: number;
+  private baseSun: number;
+  private baseFogDensity = 0.0068;
+  private baseHemiI = 1.15;
+  private baseSunI = 2.1;
 
-  constructor(scene: THREE.Scene, terrain: Terrain, seed: string, quality: 'low' | 'medium' | 'high') {
+  constructor(
+    scene: THREE.Scene, terrain: Terrain, seed: string,
+    quality: 'low' | 'medium' | 'high',
+    variant?: BiomeVariant,
+  ) {
     this.scene = scene;
     this.terrain = terrain;
     this.seed = seed;
+    // Explicit param wins; otherwise inherit whatever the terrain was generated with.
+    this.variant = variant ?? terrain.variant ?? 'highland';
+    this.pal = paletteFor(this.variant);
+    const winter = this.variant === 'winter';
+    this.baseFog = winter ? 0xd3dade : 0xc4bcae;
+    this.baseSun = winter ? 0xe6eef2 : 0xf0e3cc;
     this.quality = quality === 'high' ? 1 : quality === 'medium' ? 0.6 : 0.32;
     this.chunkRes = quality === 'high' ? 28 : quality === 'medium' ? 20 : 14;
     this.lib = buildMeshLibrary();
@@ -93,9 +128,9 @@ export class WorldRenderer {
       side: THREE.BackSide,
       depthWrite: false,
       uniforms: {
-        top: { value: new THREE.Color(0x8f95a0) },
-        mid: { value: new THREE.Color(0xc4bcae) },
-        bot: { value: new THREE.Color(0xd9d2c5) },
+        top: { value: new THREE.Color(winter ? 0x9aa6b2 : 0x8f95a0) },
+        mid: { value: new THREE.Color(this.baseFog) },
+        bot: { value: new THREE.Color(this.pal.ash) },
         emberT: { value: 0 },
       },
       vertexShader: `
@@ -119,12 +154,15 @@ export class WorldRenderer {
     this.sky.frustumCulled = false;
     scene.add(this.sky);
 
-    scene.fog = new THREE.FogExp2(0xc4bcae, 0.0068);
+    scene.fog = new THREE.FogExp2(this.baseFog, winter ? 0.0082 : 0.0068);
+    this.baseFogDensity = winter ? 0.0082 : 0.0068;
+    this.baseHemiI = winter ? 1.28 : 1.15;
+    this.baseSunI = winter ? 1.85 : 2.1;
 
-    this.hemi = new THREE.HemisphereLight(0xd9d2c5, 0x4a3f35, 1.15);
+    this.hemi = new THREE.HemisphereLight(this.pal.ash, this.pal.peat, winter ? 1.28 : 1.15);
     scene.add(this.hemi);
 
-    this.sun = new THREE.DirectionalLight(0xf0e3cc, 2.1);
+    this.sun = new THREE.DirectionalLight(this.baseSun, winter ? 1.85 : 2.1);
     this.sun.position.set(-90, 68, 52);
     this.sun.castShadow = quality !== 'low';
     if (this.sun.castShadow) {
@@ -150,8 +188,9 @@ export class WorldRenderer {
     const wGeo = new THREE.PlaneGeometry(WORLD_HALF * 2.4, WORLD_HALF * 2.4, 1, 1);
     wGeo.rotateX(-Math.PI / 2);
     this.waterMesh = new THREE.Mesh(wGeo, new THREE.MeshStandardMaterial({
-      color: 0x3a4038, roughness: 0.22, metalness: 0.35,
-      transparent: true, opacity: 0.82,
+      color: winter ? this.pal.mire : 0x3a4038,
+      roughness: winter ? 0.12 : 0.22, metalness: winter ? 0.45 : 0.35,
+      transparent: true, opacity: winter ? 0.9 : 0.82,
     }));
     this.waterMesh.position.y = SEA_LEVEL;
     this.waterMesh.receiveShadow = false;
@@ -184,16 +223,16 @@ export class WorldRenderer {
     const mat = this.sky.material as THREE.ShaderMaterial;
     mat.uniforms.emberT!.value = t;
     const fog = this.scene.fog as THREE.FogExp2;
-    fog.density = 0.0068 + t * 0.0042;
-    fog.color.setHex(0xc4bcae).lerp(new THREE.Color(PALETTE.rust), t * 0.42);
-    this.hemi.intensity = 1.15 - t * 0.35;
-    this.sun.intensity = 2.1 - t * 0.5;
-    this.sun.color.setHex(0xf0e3cc).lerp(new THREE.Color(PALETTE.rustBright), t * 0.55);
+    fog.density = this.baseFogDensity + t * 0.0042;
+    fog.color.setHex(this.baseFog).lerp(new THREE.Color(this.pal.rust), t * 0.42);
+    this.hemi.intensity = this.baseHemiI - t * 0.35;
+    this.sun.intensity = this.baseSunI - t * 0.5;
+    this.sun.color.setHex(this.baseSun).lerp(new THREE.Color(this.pal.rustBright), t * 0.55);
   }
 
   private makeChunk(cx: number, cz: number): Chunk {
     const key = `${cx},${cz}`;
-    const geo = buildChunkGeometry(this.terrain, cx, cz, this.chunkRes);
+    const geo = buildChunkGeometry(this.terrain, cx, cz, this.chunkRes, this.variant);
     const mesh = new THREE.Mesh(geo, this.terrainMat);
     mesh.position.set(cx + CHUNK / 2, 0, cz + CHUNK / 2);
     mesh.receiveShadow = true;

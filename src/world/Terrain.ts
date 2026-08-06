@@ -1,6 +1,9 @@
 import type { BiomeId, Vec3 } from '../core/Types';
 import { fbm, ridged, worley, clamp, smoothstep } from './Noise';
 import { hashString } from '../core/RNG';
+import { PALETTE_WINTER, paletteFor, type BiomeVariant, type Palette } from '../core/Palette';
+
+export type { BiomeVariant };
 
 export const WORLD_SIZE = 1400;
 export const WORLD_HALF = WORLD_SIZE / 2;
@@ -66,12 +69,75 @@ export const BIOMES: Record<BiomeId, BiomeProfile> = {
   },
 };
 
+/**
+ * Winter variant profiles: the same six regions read as a frozen highland.
+ * Ground tones are pulled from PALETTE_WINTER (frozen slate / pale peat / ice-grey);
+ * fog tints go colder and lighter. Scatter densities drop slightly - snow buries
+ * the low cover - which also makes winter cheaper to render.
+ */
+export const BIOMES_WINTER: Record<BiomeId, BiomeProfile> = {
+  ashflats: {
+    id: 'ashflats', name: 'The Frostflats',
+    ground: PALETTE_WINTER.ash, groundAlt: 0xb9bec2, fogTint: 0xdfe3e5,
+    treeDensity: 0.04, rockDensity: 0.3, grassDensity: 0.04, enemyTier: 1,
+    lore: 'Ash under rime. The drifts keep every footstep for a season.',
+  },
+  moorland: {
+    id: 'moorland', name: 'Whitemoor',
+    ground: PALETTE_WINTER.moss, groundAlt: PALETTE_WINTER.mossDark, fogTint: 0xc7d0cd,
+    treeDensity: 0.14, rockDensity: 0.35, grassDensity: 0.5, enemyTier: 1,
+    lore: 'Heather stiff with frost. The cairns wear white caps now.',
+  },
+  pinewood: {
+    id: 'pinewood', name: 'The Hoarpine',
+    ground: PALETTE_WINTER.peat, groundAlt: PALETTE_WINTER.peatDark, fogTint: 0xb4bdbd,
+    treeDensity: 0.9, rockDensity: 0.25, grassDensity: 0.2, enemyTier: 2,
+    lore: 'Needles glazed grey-white. Nothing drips; nothing thaws.',
+  },
+  crags: {
+    id: 'crags', name: 'The Rimecrags',
+    ground: PALETTE_WINTER.slate, groundAlt: PALETTE_WINTER.slateDark, fogTint: 0xc2cacf,
+    treeDensity: 0.03, rockDensity: 1.0, grassDensity: 0.03, enemyTier: 3,
+    lore: 'Slate split by frost year on year. It sheds itself in sheets.',
+  },
+  mire: {
+    id: 'mire', name: 'The Stillmire',
+    ground: PALETTE_WINTER.mire, groundAlt: 0x30393e, fogTint: 0x9fb0b3,
+    treeDensity: 0.24, rockDensity: 0.15, grassDensity: 0.35, enemyTier: 3,
+    lore: 'Black water under a lid of ice, and something under that.',
+  },
+  scorch: {
+    id: 'scorch', name: 'The Scorch',
+    ground: PALETTE_WINTER.oxblood, groundAlt: 0x3d1a19, fogTint: 0xa89094,
+    treeDensity: 0.02, rockDensity: 0.6, grassDensity: 0.0, enemyTier: 4,
+    lore: 'The one place the snow will not settle.',
+  },
+};
+
+/** Profile table for a biome variant. Highland is the original, unchanged set. */
+export function biomeTable(variant: BiomeVariant = 'highland'): Record<BiomeId, BiomeProfile> {
+  return variant === 'winter' ? BIOMES_WINTER : BIOMES;
+}
+
 export class Terrain implements TerrainSampler {
   readonly seed: number;
+  /** World-wide biome variant this terrain was generated for. */
+  readonly variant: BiomeVariant;
   private cache = new Map<number, number>();
 
-  constructor(seedStr: string) {
+  constructor(seedStr: string, variant: BiomeVariant = 'highland') {
     this.seed = hashString(seedStr);
+    this.variant = variant;
+  }
+
+  /** Colour/scatter profile for a region, resolved through the active variant. */
+  profile(biome: BiomeId): BiomeProfile {
+    return biomeTable(this.variant)[biome];
+  }
+
+  /** Colour set for the active variant - used by the renderer for tint + fog. */
+  get palette(): Palette {
+    return paletteFor(this.variant);
   }
 
   /** Distance-from-centre falloff so the world is an island basin, not an infinite plane. */
@@ -101,6 +167,13 @@ export class Terrain implements TerrainSampler {
     h += crater + craterRim;
     h *= this.falloff(x, z);
     h -= 3.5;
+
+    // Winter: snowpack fills the fine relief. Flatten toward the local mean and
+    // damp the high-frequency detail so slopes read smoother and colder.
+    if (this.variant === 'winter') {
+      const mean = continent * 22 - 3.5;
+      h = h * 0.86 + mean * 0.14 - detail * 1.5 + 0.5;
+    }
 
     // Carve river valleys with worley ridges.
     const w = worley(x / 210, z / 210, this.seed + 303);

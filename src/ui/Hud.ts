@@ -1,7 +1,9 @@
 import type { Item, QuestDef, PoiDef, Stats } from '../core/Types';
 import { el, icon, itemCard, formatAffix, rarityPip } from './Widgets';
-import { CSS } from '../core/Palette';
+import { CSS, RARITY_CSS } from '../core/Palette';
 import { comboTier } from '../systems/Combat';
+import type { EquippedRelicView, Inventory } from '../systems/Inventory';
+import { MAX_EQUIPPED_RELICS } from '../systems/Inventory';
 
 export interface HudRefs {
   root: HTMLElement;
@@ -26,6 +28,7 @@ export interface HudRefs {
   bossFill: HTMLElement;
   bossName: HTMLElement;
   subtitle: HTMLElement;
+  relicPanel: HTMLElement;
 }
 
 export function buildHud(parent: HTMLElement): HudRefs {
@@ -134,12 +137,63 @@ export function buildHud(parent: HTMLElement): HudRefs {
   const subtitle = el('div', 'subtitle-line');
   root.appendChild(subtitle);
 
+  // --- bottom-right: equipped relics ---
+  const relicPanel = el('div', 'relic-panel');
+  relicPanel.style.position = 'absolute';
+  relicPanel.style.right = '14px';
+  relicPanel.style.bottom = '14px';
+  relicPanel.style.display = 'flex';
+  relicPanel.style.alignItems = 'center';
+  relicPanel.style.gap = '6px';
+  relicPanel.style.pointerEvents = 'none';
+  root.appendChild(relicPanel);
+
   return {
     root, hpFill, hpText, stamFill, xpFill, levelText,
     soulCount, soulRing, emberCount, comboEl, questPanel, toastWrap,
     markerWrap, crosshair, interactPrompt, embertide, biomeName,
-    compass, bossBar, bossFill, bossName, subtitle,
+    compass, bossBar, bossFill, bossName, subtitle, relicPanel,
   };
+}
+
+function relicChip(r: EquippedRelicView | null, index: number): HTMLElement {
+  const chip = el('div', r ? 'relic-chip' : 'relic-chip empty');
+  chip.style.display = 'flex';
+  chip.style.alignItems = 'center';
+  chip.style.gap = '4px';
+  chip.style.padding = '3px 7px';
+  chip.style.borderRadius = '3px';
+  chip.style.font = '600 10px/1 system-ui, sans-serif';
+  chip.style.letterSpacing = '0.08em';
+  chip.style.background = 'rgba(34, 38, 43, 0.72)';
+  chip.style.border = `1px solid ${r ? (RARITY_CSS[r.rarity] ?? CSS.palegold) : CSS.slate}`;
+  chip.style.color = r ? (RARITY_CSS[r.rarity] ?? CSS.palegold) : CSS.slate;
+  chip.style.opacity = r ? '1' : '0.45';
+  if (r) {
+    chip.dataset.uid = r.uid;
+    chip.title = `${r.name}\n${r.flavor}`;
+    chip.appendChild(icon('relic', 12));
+    chip.appendChild(el('span', 'relic-chip-label', r.short));
+  } else {
+    chip.title = 'Empty relic slot';
+    chip.appendChild(el('span', 'relic-chip-label', `·${index + 1}·`));
+  }
+  return chip;
+}
+
+/** Compact equipped-relics strip. Accepts views or an Inventory reference. */
+export function updateRelics(h: HudRefs, source: Inventory | EquippedRelicView[]): void {
+  const relics = Array.isArray(source) ? source : source.getEquippedRelics();
+  h.relicPanel.replaceChildren();
+  const label = el('span', 'relic-panel-title', 'RELICS');
+  label.style.font = '600 9px/1 system-ui, sans-serif';
+  label.style.letterSpacing = '0.16em';
+  label.style.color = CSS.ash;
+  label.style.opacity = '0.6';
+  h.relicPanel.appendChild(label);
+  for (let i = 0; i < MAX_EQUIPPED_RELICS; i += 1) {
+    h.relicPanel.appendChild(relicChip(relics[i] ?? null, i));
+  }
 }
 
 export function updateVitals(

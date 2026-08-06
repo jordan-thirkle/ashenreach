@@ -1,16 +1,16 @@
 {
-  "timestamp": "2026-08-06T23:28:41.135Z",
+  "timestamp": "2026-08-06T23:46:27.026Z",
   "verdict": "PASS",
   "gates": [
     {
       "name": "no-black-screen",
       "pass": true,
-      "detail": "meanLuminance=0.3065 (gate >=0.02)"
+      "detail": "meanLuminance=0.3068 (gate >=0.02)"
     },
     {
       "name": "not-flat-render",
       "pass": true,
-      "detail": "uniqueColors=67 (gate >=32)"
+      "detail": "uniqueColors=68 (gate >=32)"
     },
     {
       "name": "no-console-errors",
@@ -34,7 +34,7 @@
     }
   ],
   "raw": {
-    "timestamp": "2026-08-06T23:28:40.912Z",
+    "timestamp": "2026-08-06T23:46:26.836Z",
     "shots": [
       "01-boot.png",
       "02-combat.png",
@@ -42,8 +42,8 @@
       "04-map.png"
     ],
     "render": {
-      "meanLuminance": 0.3064936934912867,
-      "uniqueColors": 67
+      "meanLuminance": 0.30676772092865057,
+      "uniqueColors": 68
     },
     "metrics": {
       "mode": "playing",
@@ -57,9 +57,9 @@
         "z": -111.23864254105692
       },
       "embertide": 0,
-      "drawCalls": 370,
-      "triangles": 42450,
-      "geometries": 338,
+      "drawCalls": 371,
+      "triangles": 42471,
+      "geometries": 337,
       "frame": 15
     },
     "consoleErrors": [],
