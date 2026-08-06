@@ -70,6 +70,25 @@ export const QUESTS: QuestDef[] = [
       { kind: 'codex', codexId: 'c_crown' },
     ],
   },
+  {
+    id: 'q_ashbridge', act: 2, title: 'The Ashbridge', giver: 'Hollis the Lame',
+    summary: 'A cairn-bridge over Wetmoor collapsed. Light its two pylons so the dead may cross.',
+    steps: [
+      { text: 'Reach the northern pylon', kind: 'reach', target: 'ashbridge_north', count: 1 },
+      { text: 'Light both bridge pylons', kind: 'carry', target: 'pylon', count: 2 },
+    ],
+    rewards: [{ kind: 'xp', amount: 380 }, { kind: 'embers', amount: 120 }, { kind: 'skillpoint', amount: 1 }],
+  },
+  {
+    id: 'q_wakecall', act: 3, title: 'Wake the Silent', giver: 'Keeper Maud',
+    summary: 'Three souls sleep in the Grey Crags and will not answer the wind. Rouse each where it rests.',
+    steps: [
+      { text: 'Rouse the sleeper in the hollow', kind: 'collect', target: 'slumberer', count: 1 },
+      { text: 'Rouse the sleeper by the falls', kind: 'collect', target: 'slumberer', count: 1 },
+      { text: 'Rouse the sleeper at the crag top', kind: 'collect', target: 'slumberer', count: 1 },
+    ],
+    rewards: [{ kind: 'xp', amount: 540 }, { kind: 'embers', amount: 180 }, { kind: 'codex', codexId: 'c_wakecall' }],
+  },
 ];
 
 export const QUEST_BY_ID: Record<string, QuestDef> = Object.fromEntries(
@@ -116,6 +135,7 @@ export const CODEX: CodexEntry[] = [
   { id: 'c_crown', category: 'bestiary', title: 'The Ashen Crown', body: 'Twelve metres of fused slate and bone standing in its own crater. It does not patrol. It waits. When it moves the ash falls upward.' },
   { id: 'c_embertide', category: 'lore', title: 'The Embertide', body: 'The heat rises on a cycle nobody has timed reliably. As it climbs the dead grow bolder and the relics grow richer. Wardens who leave before the crest live longer. Wardens who stay get paid.' },
   { id: 'c_relics', category: 'relics', title: 'On Relics', body: 'Objects that were near the burning and survived. Every one is warm. Every one is useful. Every one has an owner who has not entirely finished with it.' },
+  { id: 'c_wakecall', category: 'lore', title: 'The Silent Sleep', body: 'Some souls never answer the wind. They settle in the cold places — hollows, falls, crag tops — and wait for a warden to name them. To wake one is to carry it the last step it could not take alone.' },
 ];
 
 export const CODEX_BY_ID: Record<string, CodexEntry> = Object.fromEntries(

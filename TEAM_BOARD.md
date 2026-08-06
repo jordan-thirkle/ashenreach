@@ -35,12 +35,20 @@ PLATFORM: Windows (git-bash / MSYS). Terminal uses POSIX syntax.
 - Locked visual rule: only the PALETTE colors. No neon/cyan/magenta/glassmorphism.
 
 ## Tasks
-- [ ] T1-A Free rigs in gameplay (ambient Fox + CesiumMan statues)
-- [ ] T1-B New weapon archetype: glaive
-- [ ] T1-C Expand procedural audio (embertide swell, soul-bank chime, parry clang)
+- [x] T1-A Free rigs in gameplay (ambient Fox + CesiumMan statues)
+- [x] T1-B New weapon archetype: glaive
+- [x] T1-C Expand procedural audio (embertide swell, soul-bank chime, parry clang)
 
 ## Completed
-(none yet)
+- T1-A: src/world/AmbientRigs.ts (new) + WorldRenderer wiring. Fox (animated) + CesiumMan statues in world.
+- T1-B: glaive weapon — Items.ts (2 weapons), Rigs.ts (case), catalog.ts viewer entry. Combat.ts reads profile generically (no edit needed).
+- T1-C: Audio.ts — embertideSwell, soulBankChime, parryClang.
+- Integration: tsc clean, 28/28 vitest, build OK, e2e VERDICT=PASS. Pushed a239395. Redeploying.
+
+## Tier 2 (next — pending deploy confirm)
+- T2-A: Quest depth — 2 new side quests + codex entries (src/data/Quests.ts, src/systems/Quests.ts)
+- T2-B: Boss phases — Colossus 3-phase escalation (src/entities/Rigs.ts colossus, src/systems/EnemyAI.ts)
+- T2-C: Mobile polish — on-screen joystick tuning + safe-area (src/ui/MobileControls.ts, src/ui/Hud.ts)
 
 ## Integration batch (PM, after agents return)
 - Full `npm run build` + `npx vitest run` + e2e critic

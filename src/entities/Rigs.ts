@@ -13,6 +13,11 @@ export interface CharacterRig {
   legT: THREE.Group;
   weapon: THREE.Group;
   cloak?: THREE.Mesh;
+  /** Boss-only handles (populated by buildColossus) used for phase escalation cues. */
+  crown?: THREE.Group;
+  core?: THREE.Mesh;
+  ember?: THREE.MeshStandardMaterial;
+  coreLight?: THREE.PointLight;
 }
 
 const m = (c: number, r = 0.92, met = 0): THREE.MeshStandardMaterial =>
@@ -256,7 +261,29 @@ export function buildColossus(): CharacterRig {
   const legT = mkLeg(1);
 
   const weapon = new THREE.Group();
-  return { root, torso, head, armL, armR, legL, legT, weapon };
+  return { root, torso, head, armL, armR, legL, legT, weapon, crown, core, ember: emberMat, coreLight };
+}
+
+/**
+ * Phase escalation dressing for the Colossus rig. Phase 1 is the base look;
+ * each further phase burns hotter, spins its crown faster and swells slightly
+ * so the escalation reads at a glance instead of only in the HP bar.
+ */
+export function setColossusPhaseVisual(rig: CharacterRig, phase: number, time: number, flash = 0): void {
+  const p = Math.max(1, Math.min(3, phase));
+  if (rig.ember) {
+    const base = p === 3 ? 5.6 : p === 2 ? 3.8 : 2.4;
+    const pulse = 1 + Math.sin(time * (2 + p * 2.2)) * (0.08 + p * 0.05);
+    rig.ember.emissiveIntensity = base * pulse + flash * 6;
+    rig.ember.color.setHex(p === 3 ? PALETTE.rustBright : PALETTE.rust);
+  }
+  if (rig.coreLight) rig.coreLight.intensity = (p === 3 ? 30 : p === 2 ? 21 : 14) + flash * 40;
+  if (rig.crown) {
+    rig.crown.rotation.y = time * (0.12 + (p - 1) * 0.45);
+    rig.crown.position.y = Math.sin(time * (1 + p)) * 0.06 * p;
+  }
+  const swell = 1 + (p - 1) * 0.06 + flash * 0.08;
+  rig.root.scale.setScalar(swell);
 }
 
 /** Weapon meshes, built to the archetype so the silhouette matches the profile. */
