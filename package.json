@@ -16,7 +16,7 @@
     "critic": "node tests/e2e/critic.mjs"
   },
   "dependencies": {
-    "three": "^0.182.0"
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@types/three": "^0.182.0",
