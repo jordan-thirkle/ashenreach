@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Ashenreach — Carry the dead home</title>
+<meta name="description" content="A browser-native open-world action RPG. Carry the souls of the fallen across a burning highland to the cairns that will hold them. Free to play. No install." />
+<meta name="theme-color" content="#22262b" />
+<meta name="color-scheme" content="dark" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Ashenreach" />
+<meta property="og:description" content="Carry the dead home. A browser-native open-world action RPG." />
+<meta property="og:image" content="https://ashenreach.game/og.png" />
+<meta property="og:url" content="https://ashenreach.game/" />
+<meta property="og:site_name" content="Ashenreach" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Ashenreach" />
+<meta name="twitter:description" content="Carry the dead home. A browser-native open-world action RPG." />
+<meta name="twitter:image" content="https://ashenreach.game/og.png" />
+
+<!-- JSON-LD VideoGame schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Ashenreach",
+  "description": "A browser-native open-world action RPG. Carry the souls of the fallen across a burning highland to the cairns that will hold them.",
+  "genre": ["Action RPG", "Open World", "Soulslike"],
+  "gamePlatform": ["Web Browser"],
+  "operatingSystem": "Any (WebGL2)",
+  "applicationCategory": "Game",
+  "url": "https://ashenreach.game/",
+  "image": "https://ashenreach.game/og.png",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "By JTT" }
+}
+</script>
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <a class="brand" href="#top" id="top">ASHENREACH</a>
+  <nav aria-label="Primary">
+    <a href="#features">Features</a>
+    <a href="#world">World</a>
+    <a href="#systems">Systems</a>
+    <a href="#faq">FAQ</a>
+    <a class="cta" href="#play">Play free</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero" id="play">
+    <canvas id="ash" aria-hidden="true"></canvas>
+    <div class="hero-inner">
+      <p class="eyebrow">Browser-native action RPG</p>
+      <h1>Carry the dead home.</h1>
+      <p class="lede">The highland burns. The souls of the fallen cling to the living, and the longer you carry them, the heavier the dark grows. Reach the cairns. Lay them to rest. Do not let the embertide take you.</p>
+      <div class="hero-cta">
+        <a class="btn primary" href="https://ashenreach.game/play">Play in browser</a>
+        <a class="btn ghost" href="#wishlist">Wishlist</a>
+      </div>
+      <p class="hero-meta">Free to play · No install · WebGL2 · Desktop &amp; mobile</p>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">▼</div>
+  </section>
+
+  <section class="features" id="features" aria-labelledby="features-h">
+    <h2 id="features-h">What it is</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>Carry, don't hoard</h3>
+        <p>Every soul you bear is a debt. Bank them at cairns for score, or risk the Embertide for one more before the dark swallows the run.</p>
+      </article>
+      <article class="card">
+        <h3>Combat with weight</h3>
+        <p>Timing-based swings, parries, and dashes. Build a combo, break a guard, and end the Colossus before the embertide peaks.</p>
+      </article>
+      <article class="card">
+        <h3>A world that reacts</h3>
+        <p>Procedural highland, ruined shrines, ash-drift storms. Each run is a different stretch of burning land to cross.</p>
+      </article>
+      <article class="card">
+        <h3>Yours to keep</h3>
+        <p>Progression, loadouts, and a leaderboard. The run is short; the studio is forever.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="world" id="world" aria-labelledby="world-h">
+    <h2 id="world-h">The burning highland</h2>
+    <p class="section-lede">Five biomes, one horizon of ash. From the peat lowlands to the cairn ridges, every stretch is hand-tuned and procedurally placed.</p>
+    <ul class="biomes">
+      <li><span class="sw" style="--c:#4a3f35"></span> Peat lowlands</li>
+      <li><span class="sw" style="--c:#6e7a54"></span> Moss slopes</li>
+      <li><span class="sw" style="--c:#3b4149"></span> Slate ruins</li>
+      <li><span class="sw" style="--c:#3f4a3c"></span> Mire hollows</li>
+      <li><span class="sw" style="--c:#6e2a28"></span> Embertide crest</li>
+    </ul>
+    <div class="shot-grid" aria-label="Screenshots">
+      <div class="shot ph">In-game capture</div>
+      <div class="shot ph">In-game capture</div>
+      <div class="shot ph">In-game capture</div>
+    </div>
+  </section>
+
+  <section class="systems" id="systems" aria-labelledby="systems-h">
+    <h2 id="systems-h">Systems deep-dive</h2>
+    <div class="deep">
+      <div class="deep-row"><h3>The Embertide</h3><p>A rising tide of difficulty. Enemies hit harder, spawn denser, and the light fades. Bank souls to reset it — or push your luck.</p></div>
+      <div class="deep-row"><h3>Loadouts</h3><p>Blade, maul, spear, censer. Each weapon changes reach, swing-time, and stagger. Affix rolls make every drop a choice.</p></div>
+      <div class="deep-row"><h3>Cairns</h3><p>Safe points that bank souls, restore poise, and hold your progress. The world is hostile between them.</p></div>
+      <div class="deep-row"><h3>Score &amp; daily</h3><p>A transparent score model rewards banking over hoarding. Daily seeds keep the chase fresh.</p></div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faq-h">
+    <h2 id="faq-h">Questions</h2>
+    <details><summary>How much does it cost?</summary><p>Ashenreach is free to play in the browser. No purchase, no install.</p></details>
+    <details><summary>What do I need to run it?</summary><p>A browser with WebGL2 — any modern desktop or mobile browser. No download.</p></details>
+    <details><summary>Is it multiplayer?</summary><p>No. Ashenreach is a single-player run with a shared global leaderboard.</p></details>
+    <details><summary>Does progress save?</summary><p>Yes. Equipment, loadouts, and scores persist locally in your browser.</p></details>
+    <details><summary>Who made it?</summary><p>Ashenreach is built by By JTT — a small studio shipping AI-native browser games.</p></details>
+  </section>
+
+  <section class="cta-final" id="wishlist" aria-labelledby="wish-h">
+    <h2 id="wish-h">Ready to carry them home?</h2>
+    <p>Wishlist on Steam and follow the build on X for the next playable drop.</p>
+    <div class="hero-cta">
+      <a class="btn primary" href="https://ashenreach.game/play">Play now</a>
+      <a class="btn ghost" href="https://store.steampowered.com/app/ashenreach">Wishlist on Steam</a>
+      <a class="btn ghost" href="https://x.com/byjtt">Follow on X</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <p>© By JTT. Ashenreach is a work of fiction. Built browser-native.</p>
+  <nav aria-label="Footer"><a href="#features">Features</a><a href="#world">World</a><a href="#systems">Systems</a><a href="#faq">FAQ</a></nav>
+</footer>
+
+<script src="main.js" defer></script>
+</body>
+</html>

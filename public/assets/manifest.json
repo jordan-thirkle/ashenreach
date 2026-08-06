@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "generated": "2026-08-06T03:50:22.617Z",
+  "entries": [
+    {
+      "id": "warden_blade",
+      "kind": "model",
+      "path": "assets/models/warden_blade.glb",
+      "bytes": 23084,
+      "tris": 600,
+      "tags": [
+        "character",
+        "player"
+      ],
+      "description": "Procedural low-poly model: warden_blade"
+    },
+    {
+      "id": "warden_maul",
+      "kind": "model",
+      "path": "assets/models/warden_maul.glb",
+      "bytes": 23084,
+      "tris": 640,
+      "tags": [
+        "character",
+        "player"
+      ],
+      "description": "Procedural low-poly model: warden_maul"
+    },
+    {
+      "id": "warden_spear",
+      "kind": "model",
+      "path": "assets/models/warden_spear.glb",
+      "bytes": 21456,
+      "tris": 580,
+      "tags": [
+        "character",
+        "player"
+      ],
+      "description": "Procedural low-poly model: warden_spear"
+    },
+    {
+      "id": "censer",
+      "kind": "model",
+      "path": "assets/models/censer.glb",
+      "bytes": 23076,
+      "tris": 300,
+      "tags": [
+        "character",
+        "player"
+      ],
+      "description": "Procedural low-poly model: censer"
+    },
+    {
+      "id": "husk",
+      "kind": "model",
+      "path": "assets/models/husk.glb",
+      "bytes": 21456,
+      "tris": 420,
+      "tags": [
+        "enemy"
+      ],
+      "description": "Procedural low-poly model: husk"
+    },
+    {
+      "id": "wight",
+      "kind": "model",
+      "path": "assets/models/wight.glb",
+      "bytes": 23076,
+      "tris": 480,
+      "tags": [
+        "enemy"
+      ],
+      "description": "Procedural low-poly model: wight"
+    },
+    {
+      "id": "hound",
+      "kind": "model",
+      "path": "assets/models/hound.glb",
+      "bytes": 15796,
+      "tris": 360,
+      "tags": [
+        "enemy"
+      ],
+      "description": "Procedural low-poly model: hound"
+    },
+    {
+      "id": "warden_elite",
+      "kind": "model",
+      "path": "assets/models/warden_elite.glb",
+      "bytes": 23084,
+      "tris": 700,
+      "tags": [
+        "enemy",
+        "elite"
+      ],
+      "description": "Procedural low-poly model: warden_elite"
+    },
+    {
+      "id": "colossus_boss",
+      "kind": "model",
+      "path": "assets/models/colossus_boss.glb",
+      "bytes": 45112,
+      "tris": 1200,
+      "tags": [
+        "enemy",
+        "boss"
+      ],
+      "description": "Procedural low-poly model: colossus_boss"
+    },
+    {
+      "id": "cairn_stone",
+      "kind": "model",
+      "path": "assets/models/cairn_stone.glb",
+      "bytes": 2232,
+      "tris": 240,
+      "tags": [
+        "prop"
+      ],
+      "description": "Procedural low-poly model: cairn_stone"
+    },
+    {
+      "id": "pine_tree",
+      "kind": "model",
+      "path": "assets/models/pine_tree.glb",
+      "bytes": 1896,
+      "tris": 220,
+      "tags": [
+        "prop",
+        "foliage"
+      ],
+      "description": "Procedural low-poly model: pine_tree"
+    },
+    {
+      "id": "dead_tree",
+      "kind": "model",
+      "path": "assets/models/dead_tree.glb",
+      "bytes": 2012,
+      "tris": 180,
+      "tags": [
+        "prop",
+        "foliage"
+      ],
+      "description": "Procedural low-poly model: dead_tree"
+    },
+    {
+      "id": "rock_cluster",
+      "kind": "model",
+      "path": "assets/models/rock_cluster.glb",
+      "bytes": 2308,
+      "tris": 160,
+      "tags": [
+        "prop"
+      ],
+      "description": "Procedural low-poly model: rock_cluster"
+    },
+    {
+      "id": "ruin_arch",
+      "kind": "model",
+      "path": "assets/models/ruin_arch.glb",
+      "bytes": 1708,
+      "tris": 320,
+      "tags": [
+        "prop",
+        "ruin"
+      ],
+      "description": "Procedural low-poly model: ruin_arch"
+    },
+    {
+      "id": "shrine",
+      "kind": "model",
+      "path": "assets/models/shrine.glb",
+      "bytes": 1704,
+      "tris": 280,
+      "tags": [
+        "prop"
+      ],
+      "description": "Procedural low-poly model: shrine"
+    },
+    {
+      "id": "barrel",
+      "kind": "model",
+      "path": "assets/models/barrel.glb",
+      "bytes": 2988,
+      "tris": 140,
+      "tags": [
+        "prop"
+      ],
+      "description": "Procedural low-poly model: barrel"
+    },
+    {
+      "id": "watchtower",
+      "kind": "model",
+      "path": "assets/models/watchtower.glb",
+      "bytes": 2596,
+      "tris": 520,
+      "tags": [
+        "prop",
+        "ruin"
+      ],
+      "description": "Procedural low-poly model: watchtower"
+    },
+    {
+      "id": "soul_wisp",
+      "kind": "model",
+      "path": "assets/models/soul_wisp.glb",
+      "bytes": 6628,
+      "tris": 80,
+      "tags": [
+        "fx"
+      ],
+      "description": "Procedural low-poly model: soul_wisp"
+    },
+    {
+      "id": "weapon_blade",
+      "kind": "model",
+      "path": "assets/models/weapon_blade.glb",
+      "bytes": 6624,
+      "tris": 90,
+      "tags": [
+        "weapon"
+      ],
+      "description": "Procedural low-poly model: weapon_blade"
+    },
+    {
+      "id": "weapon_maul",
+      "kind": "model",
+      "path": "assets/models/weapon_maul.glb",
+      "bytes": 5260,
+      "tris": 140,
+      "tags": [
+        "weapon"
+      ],
+      "description": "Procedural low-poly model: weapon_maul"
+    },
+    {
+      "id": "weapon_spear",
+      "kind": "model",
+      "path": "assets/models/weapon_spear.glb",
+      "bytes": 5624,
+      "tris": 110,
+      "tags": [
+        "weapon"
+      ],
+      "description": "Procedural low-poly model: weapon_spear"
+    },
+    {
+      "id": "weapon_censer",
+      "kind": "model",
+      "path": "assets/models/weapon_censer.glb",
+      "bytes": 3952,
+      "tris": 130,
+      "tags": [
+        "weapon"
+      ],
+      "description": "Procedural low-poly model: weapon_censer"
+    },
+    {
+      "id": "rock_slate",
+      "kind": "texture",
+      "path": "assets/textures/rock_slate",
+      "bytes": 1248500,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): rock_slate"
+    },
+    {
+      "id": "soil_peat",
+      "kind": "texture",
+      "path": "assets/textures/soil_peat",
+      "bytes": 1172418,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): soil_peat"
+    },
+    {
+      "id": "grass_moss",
+      "kind": "texture",
+      "path": "assets/textures/grass_moss",
+      "bytes": 1255830,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): grass_moss"
+    },
+    {
+      "id": "ash_drift",
+      "kind": "texture",
+      "path": "assets/textures/ash_drift",
+      "bytes": 1248402,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): ash_drift"
+    },
+    {
+      "id": "bark_pine",
+      "kind": "texture",
+      "path": "assets/textures/bark_pine",
+      "bytes": 1184483,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): bark_pine"
+    },
+    {
+      "id": "stone_ruin",
+      "kind": "texture",
+      "path": "assets/textures/stone_ruin",
+      "bytes": 1243395,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): stone_ruin"
+    },
+    {
+      "id": "metal_rust",
+      "kind": "texture",
+      "path": "assets/textures/metal_rust",
+      "bytes": 1258233,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): metal_rust"
+    },
+    {
+      "id": "cloth_worn",
+      "kind": "texture",
+      "path": "assets/textures/cloth_worn",
+      "bytes": 1193919,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): cloth_worn"
+    },
+    {
+      "id": "bone_pale",
+      "kind": "texture",
+      "path": "assets/textures/bone_pale",
+      "bytes": 1245755,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): bone_pale"
+    },
+    {
+      "id": "mire_mud",
+      "kind": "texture",
+      "path": "assets/textures/mire_mud",
+      "bytes": 1120162,
+      "dims": [
+        512,
+        512
+      ],
+      "tags": [
+        "pbr",
+        "seamless"
+      ],
+      "description": "Procedural PBR set (albedo/normal/roughness): mire_mud"
+    },
+    {
+      "id": "blade",
+      "kind": "icon",
+      "path": "assets/icons/blade.png",
+      "bytes": 421,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: blade"
+    },
+    {
+      "id": "maul",
+      "kind": "icon",
+      "path": "assets/icons/maul.png",
+      "bytes": 464,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: maul"
+    },
+    {
+      "id": "spear",
+      "kind": "icon",
+      "path": "assets/icons/spear.png",
+      "bytes": 488,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: spear"
+    },
+    {
+      "id": "censer",
+      "kind": "icon",
+      "path": "assets/icons/censer.png",
+      "bytes": 540,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: censer"
+    },
+    {
+      "id": "cloak",
+      "kind": "icon",
+      "path": "assets/icons/cloak.png",
+      "bytes": 454,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: cloak"
+    },
+    {
+      "id": "charm",
+      "kind": "icon",
+      "path": "assets/icons/charm.png",
+      "bytes": 533,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: charm"
+    },
+    {
+      "id": "relic",
+      "kind": "icon",
+      "path": "assets/icons/relic.png",
+      "bytes": 460,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: relic"
+    },
+    {
+      "id": "potion",
+      "kind": "icon",
+      "path": "assets/icons/potion.png",
+      "bytes": 540,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: potion"
+    },
+    {
+      "id": "ember",
+      "kind": "icon",
+      "path": "assets/icons/ember.png",
+      "bytes": 560,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: ember"
+    },
+    {
+      "id": "soul",
+      "kind": "icon",
+      "path": "assets/icons/soul.png",
+      "bytes": 543,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: soul"
+    },
+    {
+      "id": "skill_strike",
+      "kind": "icon",
+      "path": "assets/icons/skill_strike.png",
+      "bytes": 436,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: skill_strike"
+    },
+    {
+      "id": "skill_dash",
+      "kind": "icon",
+      "path": "assets/icons/skill_dash.png",
+      "bytes": 407,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: skill_dash"
+    },
+    {
+      "id": "skill_parry",
+      "kind": "icon",
+      "path": "assets/icons/skill_parry.png",
+      "bytes": 628,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: skill_parry"
+    },
+    {
+      "id": "skill_ember",
+      "kind": "icon",
+      "path": "assets/icons/skill_ember.png",
+      "bytes": 548,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: skill_ember"
+    },
+    {
+      "id": "skill_bank",
+      "kind": "icon",
+      "path": "assets/icons/skill_bank.png",
+      "bytes": 409,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: skill_bank"
+    },
+    {
+      "id": "skill_combo",
+      "kind": "icon",
+      "path": "assets/icons/skill_combo.png",
+      "bytes": 562,
+      "dims": [
+        128,
+        128
+      ],
+      "tags": [
+        "ui"
+      ],
+      "description": "Procedural UI icon: skill_combo"
+    }
+  ]
+}

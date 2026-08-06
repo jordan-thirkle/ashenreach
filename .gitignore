@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.vite/
+
+# Vercel
+.vercel/
+.vercel_build_output/
+
+# IDE / editor
+.commandcode/
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local secrets
+.env
+.env.local
+*.key
+
+# Test artifacts (keep shots out of git; they are generated)
+tests/e2e/shots/
+coverage/

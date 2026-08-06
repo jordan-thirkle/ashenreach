@@ -1,0 +1,28 @@
+{
+  "name": "ashenreach",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Ashenreach - a browser-native open-world action RPG. Carry the dead home.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && node scripts/package-dist.mjs",
+    "build:fast": "vite build && node scripts/package-dist.mjs",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc --noEmit",
+    "assets": "node tools/assetgen/build.mjs",
+    "test": "vitest run",
+    "e2e": "node tests/e2e/run.mjs",
+    "critic": "node tests/e2e/critic.mjs"
+  },
+  "dependencies": {
+    "three": "^0.182.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.182.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.0",
+    "vitest": "^3.2.0",
+    "playwright": "^1.62.1"
+  }
+}
