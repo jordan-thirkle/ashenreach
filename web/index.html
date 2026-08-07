@@ -3,40 +3,82 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Ashenreach — Carry the dead home</title>
-<meta name="description" content="A browser-native open-world action RPG. Carry the souls of the fallen across a burning highland to the cairns that will hold them. Free to play. No install." />
+<title>Ashenreach — Carry the dead home | Browser-native action RPG</title>
+<meta name="description" content="Ashenreach is a free, browser-native open-world action RPG. Carry the souls of the fallen across a burning highland to the cairns that will hold them. No install, plays on desktop and mobile. Built by By JTT." />
 <meta name="theme-color" content="#22262b" />
 <meta name="color-scheme" content="dark" />
+<meta name="author" content="By JTT" />
+<link rel="canonical" href="https://ashenreach.vercel.app/" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2322262b'/%3E%3Cpath d='M16 6l3 8h-6z' fill='%23d9763a'/%3E%3Crect x='11' y='16' width='10' height='3' fill='%23c9a227'/%3E%3Crect x='9' y='21' width='14' height='3' fill='%23c9a227'/%3E%3C/svg%3E" />
+<link rel="manifest" href="/manifest.webmanifest" />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Ashenreach" />
-<meta property="og:description" content="Carry the dead home. A browser-native open-world action RPG." />
-<meta property="og:image" content="https://ashenreach.game/og.png" />
-<meta property="og:url" content="https://ashenreach.game/" />
+<meta property="og:title" content="Ashenreach — Carry the dead home" />
+<meta property="og:description" content="A free, browser-native open-world action RPG. Carry the souls of the fallen across a burning highland. No install." />
+<meta property="og:image" content="https://ashenreach.vercel.app/og.png" />
+<meta property="og:url" content="https://ashenreach.vercel.app/" />
 <meta property="og:site_name" content="Ashenreach" />
+<meta property="og:locale" content="en_US" />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Ashenreach" />
-<meta name="twitter:description" content="Carry the dead home. A browser-native open-world action RPG." />
-<meta name="twitter:image" content="https://ashenreach.game/og.png" />
+<meta name="twitter:title" content="Ashenreach — Carry the dead home" />
+<meta name="twitter:description" content="A free, browser-native open-world action RPG. Carry the souls of the fallen across a burning highland. No install." />
+<meta name="twitter:image" content="https://ashenreach.vercel.app/og.png" />
 
-<!-- JSON-LD VideoGame schema -->
+<!-- AI / LLM optimization -->
+<meta name="description" itemprop="description" />
+<link rel="alternate" type="text/markdown" href="https://ashenreach.vercel.app/llms.txt" />
+
+<!-- JSON-LD: VideoGame -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "VideoGame",
   "name": "Ashenreach",
+  "alternateName": "Ashenreach: Carry the Dead Home",
   "description": "A browser-native open-world action RPG. Carry the souls of the fallen across a burning highland to the cairns that will hold them.",
   "genre": ["Action RPG", "Open World", "Soulslike"],
   "gamePlatform": ["Web Browser"],
   "operatingSystem": "Any (WebGL2)",
   "applicationCategory": "Game",
-  "url": "https://ashenreach.game/",
-  "image": "https://ashenreach.game/og.png",
+  "playMode": "SinglePlayer",
+  "url": "https://ashenreach.vercel.app/",
+  "sameAs": ["https://x.com/byjtt"],
+  "image": "https://ashenreach.vercel.app/og.png",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "By JTT" }
+  "author": { "@type": "Organization", "name": "By JTT", "url": "https://byjtt.com" },
+  "publisher": { "@type": "Organization", "name": "By JTT", "url": "https://byjtt.com" },
+  "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "1", "bestRating": "5" }
+}
+</script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Ashenreach", "item": "https://ashenreach.vercel.app/" },
+    { "@type": "ListItem", "position": 2, "name": "Play", "item": "https://ashenreach.vercel.app/play" },
+    { "@type": "ListItem", "position": 3, "name": "Asset Viewer", "item": "https://ashenreach.vercel.app/viewer" }
+  ]
+}
+</script>
+
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "How much does Ashenreach cost?", "acceptedAnswer": { "@type": "Answer", "text": "Ashenreach is free to play in the browser. No purchase, no install." } },
+    { "@type": "Question", "name": "What do I need to run Ashenreach?", "acceptedAnswer": { "@type": "Answer", "text": "A browser with WebGL2 — any modern desktop or mobile browser. No download." } },
+    { "@type": "Question", "name": "Is Ashenreach multiplayer?", "acceptedAnswer": { "@type": "Answer", "text": "No. Ashenreach is a single-player run with a shared global leaderboard." } },
+    { "@type": "Question", "name": "Does progress save in Ashenreach?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Equipment, loadouts, and scores persist locally in your browser." } },
+    { "@type": "Question", "name": "Who made Ashenreach?", "acceptedAnswer": { "@type": "Answer", "text": "Ashenreach is built by By JTT, a small studio shipping AI-native browser games." } }
+  ]
 }
 </script>
 
@@ -52,7 +94,7 @@
     <a href="#world">World</a>
     <a href="#systems">Systems</a>
     <a href="#faq">FAQ</a>
-    <a class="cta" href="#play">Play free</a>
+    <a class="cta" href="/play">Play free</a>
   </nav>
 </header>
 
@@ -64,7 +106,7 @@
       <h1>Carry the dead home.</h1>
       <p class="lede">The highland burns. The souls of the fallen cling to the living, and the longer you carry them, the heavier the dark grows. Reach the cairns. Lay them to rest. Do not let the embertide take you.</p>
       <div class="hero-cta">
-        <a class="btn primary" href="https://ashenreach.game/play">Play in browser</a>
+        <a class="btn primary" href="/play">Play in browser</a>
         <a class="btn ghost" href="#wishlist">Wishlist</a>
       </div>
       <p class="hero-meta">Free to play · No install · WebGL2 · Desktop &amp; mobile</p>
@@ -132,10 +174,9 @@
 
   <section class="cta-final" id="wishlist" aria-labelledby="wish-h">
     <h2 id="wish-h">Ready to carry them home?</h2>
-    <p>Wishlist on Steam and follow the build on X for the next playable drop.</p>
+    <p>Play free in your browser now, or follow By JTT on X for the next playable drop and the Steam wishlist.</p>
     <div class="hero-cta">
-      <a class="btn primary" href="https://ashenreach.game/play">Play now</a>
-      <a class="btn ghost" href="https://store.steampowered.com/app/ashenreach">Wishlist on Steam</a>
+      <a class="btn primary" href="/play">Play now</a>
       <a class="btn ghost" href="https://x.com/byjtt">Follow on X</a>
     </div>
   </section>

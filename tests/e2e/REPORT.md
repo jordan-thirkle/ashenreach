@@ -4,11 +4,11 @@
 
 | Gate | Result | Detail |
 | --- | --- | --- |
-| no-black-screen | PASS | meanLuminance=0.3068 (gate >=0.02) |
-| not-flat-render | PASS | uniqueColors=68 (gate >=32) |
+| no-black-screen | PASS | meanLuminance=0.3055 (gate >=0.02) |
+| not-flat-render | PASS | uniqueColors=71 (gate >=32) |
 | no-console-errors | PASS | errors=0 |
 | fps-acceptable | PASS | fps=0 (gate >=30; 0 = not measured in headless) |
-| game-booted | PASS | frame=17 |
+| game-booted | PASS | frame=20 |
 | enemies-spawned | PASS | enemies=10 |
 
 Shots: 01-boot.png, 02-combat.png, 03-inventory.png, 04-map.png

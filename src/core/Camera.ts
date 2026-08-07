@@ -18,6 +18,10 @@ export class GameCamera {
   private fovTarget = 62;
   private terrain: Terrain;
   private lookAhead = new THREE.Vector3();
+  /** Collision pull-in fraction along target->desired (1 = fully out). */
+  private collideT = 1;
+  private readonly CLEARANCE = 0.85;
+  private readonly MIN_T = 0.28;
 
   constructor(aspect: number, terrain: Terrain) {
     this.cam = new THREE.PerspectiveCamera(this.fovBase, aspect, 0.1, 1800);
@@ -73,18 +77,32 @@ export class GameCamera {
 
     let desired = this.smoothTarget.clone().add(offset);
 
-    // Terrain collision: step the ray and pull in if the ground occludes.
-    const steps = 8;
+    // --- Terrain collision -------------------------------------------------
+    // March from the target toward the desired position and find the first
+    // fraction where terrain (plus clearance) occludes the camera.
+    const steps = 12;
+    let hitT = 1;
     for (let i = 1; i <= steps; i++) {
       const t = i / steps;
-      const p = this.smoothTarget.clone().lerp(desired, t);
-      const g = this.terrain.height(p.x, p.z) + 0.85;
-      if (p.y < g) {
-        desired = this.smoothTarget.clone().lerp(desired, Math.max(0.28, t - 1 / steps));
+      const px = this.smoothTarget.x + (desired.x - this.smoothTarget.x) * t;
+      const py = this.smoothTarget.y + (desired.y - this.smoothTarget.y) * t;
+      const pz = this.smoothTarget.z + (desired.z - this.smoothTarget.z) * t;
+      if (py < this.terrain.height(px, pz) + this.CLEARANCE) {
+        hitT = Math.max(this.MIN_T, (i - 1) / steps);
         break;
       }
     }
-    const minY = this.terrain.height(desired.x, desired.z) + 0.85;
+
+    // Snap in immediately when blocked (never clip), ease back out when clear.
+    // Asymmetric damping is what keeps this from jittering on broken ground.
+    if (hitT < this.collideT) this.collideT = hitT;
+    else this.collideT = damp(this.collideT, hitT, 3.2, dt);
+    this.collideT = Math.max(this.MIN_T, Math.min(1, this.collideT));
+
+    desired = this.smoothTarget.clone().lerp(desired, this.collideT);
+
+    // Final floor guard: never sit below the ground under the camera.
+    const minY = this.terrain.height(desired.x, desired.z) + this.CLEARANCE;
     if (desired.y < minY) desired.y = minY;
 
     this.cam.position.copy(desired);

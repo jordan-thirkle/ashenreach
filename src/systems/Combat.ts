@@ -1,6 +1,10 @@
 import type { Item, Stats, StatKey, DamageType, Settings } from '../core/Types';
 import { SKILL_BY_ID } from '../data/Quests';
 
+import * as THREE from 'three';
+import type { JuiceSystem } from './Juice';
+import { PALETTE } from '../core/Palette';
+
 export const BASE_STATS: Stats = {
   power: 10, guard: 0, swiftness: 0, vigor: 100, focus: 0,
   critChance: 0.05, critMult: 1.5,
@@ -159,4 +163,30 @@ export function carryPenalty(souls: number, hasAshVeil: boolean, hasBroadShoulde
 /** Souls -> XP on banking. Superlinear so a big risky carry pays off. */
 export function soulBankXp(souls: number, embertide: number): number {
   return Math.round(souls * 45 * Math.pow(souls, 0.28) * (1 + embertide * 0.25));
+}
+
+// --------------------------------------------------------------------------- combat juice wiring
+// Parry / heavy-hit outcomes are surfaced here so the resolution layer (Game) can route
+// the result straight into the JuiceSystem. This keeps the accent juice (parryFlash,
+// hitStop, ember damage flash) wired to the exact moment a parry succeeds or a heavy hit
+// lands. Additive: the existing damage-math functions above are untouched.
+
+export interface StrikeResolution {
+  parried: boolean;
+  blocked: boolean;
+  pos: THREE.Vector3;
+}
+
+/** Fire the correct accent juice for a resolved enemy strike. */
+export function applyStrikeJuice(r: StrikeResolution, juice: JuiceSystem): void {
+  if (r.parried) {
+    juice.parryFlash(r.pos);
+    return;
+  }
+  if (r.blocked) return;
+  // Heavy hit landed: ember damage pulse + hit-stop + a bright ember ground ring.
+  juice.hitStop(120);
+  juice.addTrauma(0.5);
+  juice.damageFlash();
+  juice.impactBurst(r.pos, PALETTE.ember, 2.8);
 }

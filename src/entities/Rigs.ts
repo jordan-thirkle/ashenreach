@@ -24,6 +24,18 @@ const m = (c: number, r = 0.92, met = 0): THREE.MeshStandardMaterial =>
   new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: met, flatShading: true });
 
 /**
+ * Subtle value-contrast glow. Lifts an actor's own palette colour so the rig
+ * reads against the mid-tone earth instead of melting into it. Kept low so it
+ * separates value (light) not hue (neon). No-op unless the material can glow.
+ */
+const addGlow = (mat: THREE.Material, hex: number, intensity: number): void => {
+  if (mat instanceof THREE.MeshStandardMaterial) {
+    mat.emissive.setHex(hex);
+    mat.emissiveIntensity = intensity;
+  }
+};
+
+/**
  * Hand-built low-poly humanoid rig. No glTF, no skinning cost - limbs are
  * Groups rotated procedurally, which is far cheaper than a SkinnedMesh and
  * cannot hit the T-pose/clone bugs that plague rigged browser characters.
@@ -39,6 +51,13 @@ export function buildHumanoid(opts: {
   const skinMat = m(opts.skin, 0.94);
   const clothMat = m(opts.cloth, 0.97);
   const accentMat = m(opts.accent, 0.7, 0.2);
+
+  // Value contrast: a faint self-glow keyed to each material's own colour so the
+  // actor pops off the terrain. Player reads bone/ash (skin), enemies read
+  // rust/oxblood (accent) because the caller already passes those palette hues.
+  addGlow(skinMat, opts.skin, 0.14);
+  addGlow(clothMat, opts.cloth, 0.10);
+  addGlow(accentMat, opts.accent, 0.20);
 
   // Torso: tapered box, wider at shoulders.
   const torsoGeo = new THREE.CylinderGeometry(0.3 * bulk, 0.24 * bulk, 0.72, 6);
@@ -120,9 +139,11 @@ export function buildHumanoid(opts: {
   if (opts.cloak) {
     const cg = new THREE.ConeGeometry(0.42 * bulk, 1.05, 7, 2, true);
     cg.translate(0, -0.35, -0.06);
-    cloak = new THREE.Mesh(cg, new THREE.MeshStandardMaterial({
+    const cloakMat = new THREE.MeshStandardMaterial({
       color: opts.cloth, roughness: 0.98, side: THREE.DoubleSide, flatShading: true,
-    }));
+    });
+    addGlow(cloakMat, opts.cloth, 0.10);
+    cloak = new THREE.Mesh(cg, cloakMat);
     cloak.position.y = 1.5 * s;
     cloak.castShadow = true;
     root.add(cloak);
@@ -137,6 +158,7 @@ export function buildHumanoid(opts: {
 export function buildHound(color: number, eyeColor: number): CharacterRig {
   const root = new THREE.Group();
   const body = m(color, 0.95);
+  addGlow(body, color, 0.12);
   const bodyGeo = new THREE.CylinderGeometry(0.19, 0.15, 0.86, 6);
   bodyGeo.rotateZ(Math.PI / 2);
   const torso = new THREE.Mesh(bodyGeo, body);
@@ -186,6 +208,7 @@ export function buildHound(color: number, eyeColor: number): CharacterRig {
 export function buildColossus(): CharacterRig {
   const root = new THREE.Group();
   const slate = m(PALETTE.slateDark, 0.94);
+  addGlow(slate, PALETTE.oxblood, 0.06);
   const emberMat = new THREE.MeshStandardMaterial({
     color: PALETTE.rust, emissive: PALETTE.rustBright,
     emissiveIntensity: 2.4, roughness: 0.6, flatShading: true,

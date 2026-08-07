@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-07T00:09:02.919Z",
+  "timestamp": "2026-08-07T00:50:05.367Z",
   "shots": [
     "01-boot.png",
     "02-combat.png",
@@ -7,8 +7,8 @@
     "04-map.png"
   ],
   "render": {
-    "meanLuminance": 0.30681706733387926,
-    "uniqueColors": 68
+    "meanLuminance": 0.3055490223311559,
+    "uniqueColors": 71
   },
   "metrics": {
     "mode": "playing",
@@ -22,10 +22,10 @@
       "z": -111.23864254105692
     },
     "embertide": 0,
-    "drawCalls": 372,
-    "triangles": 42491,
-    "geometries": 337,
-    "frame": 17
+    "drawCalls": 667,
+    "triangles": 125866,
+    "geometries": 360,
+    "frame": 20
   },
   "consoleErrors": [],
   "consoleWarnings": []

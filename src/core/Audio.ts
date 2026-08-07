@@ -20,6 +20,23 @@ export class AudioEngine {
   private step = 0;
   private intensity = 0;
   private lastSfx = new Map<string, number>();
+  // Adaptive music layers: calm bed always on, tension layer fades in.
+  private calmLayer: GainNode | null = null;
+  private tensionLayer: GainNode | null = null;
+  private tension = 0;
+  private embertideActive = false;
+  private nearbyEnemies = 0;
+  private layersBuilt = false;
+
+  /** Symmetric random jitter in [-a, a]. */
+  private jit(a: number): number {
+    return (Math.random() * 2 - 1) * a;
+  }
+
+  /** Multiplicative jitter around 1 (e.g. 0.06 => 0.94..1.06). */
+  private jmul(a: number): number {
+    return 1 + this.jit(a);
+  }
 
   constructor(settings: Settings) {
     this.settings = settings;
@@ -175,38 +192,44 @@ export class AudioEngine {
     switch (name) {
       case 'swing':
         if (!this.gate('swing', 60)) return;
-        this.noiseHit(0.22, 0.16, t, 'bandpass', 1800 + v * 260, 420, 1.6);
+        this.noiseHit(0.22 * this.jmul(0.14), 0.16 * this.jmul(0.12), t,
+          'bandpass', (1800 + v * 260) * this.jmul(0.1), 420, 1.6);
         break;
       case 'hit':
         if (!this.gate('hit', 40)) return;
         this.duck(0.7, 120);
-        this.noiseHit(0.42, 0.13, t, 'lowpass', 2400, 260, 0.9);
-        this.tone(126 + v * 14, 'triangle', 0.34, 0.004, 0.14, t, 0, 62);
+        this.noiseHit(0.42 * this.jmul(0.12), 0.13 * this.jmul(0.15), t,
+          'lowpass', 2400 * this.jmul(0.12), 260, 0.9);
+        this.tone((126 + v * 14) * this.jmul(0.06), 'triangle',
+          0.34 * this.jmul(0.12), 0.004, 0.14, t, this.jit(20), 62);
         break;
       case 'crit':
         this.duck(0.55, 200);
-        this.noiseHit(0.55, 0.2, t, 'lowpass', 3600, 220, 1.1);
-        this.tone(196, 'square', 0.26, 0.003, 0.2, t, 0, 88);
-        this.tone(392, 'triangle', 0.18, 0.003, 0.26, t + 0.02);
+        this.noiseHit(0.55 * this.jmul(0.1), 0.2, t, 'lowpass', 3600 * this.jmul(0.1), 220, 1.1);
+        this.tone(196 * this.jmul(0.04), 'square', 0.26, 0.003, 0.2, t, this.jit(16), 88);
+        this.tone(392 * this.jmul(0.04), 'triangle', 0.18, 0.003, 0.26, t + 0.02);
         break;
       case 'kill':
         this.duck(0.5, 260);
-        this.noiseHit(0.5, 0.42, t, 'lowpass', 1700, 130, 0.7);
-        this.tone(92, 'sine', 0.4, 0.005, 0.5, t, 0, 44);
-        this.tone(147, 'triangle', 0.16, 0.01, 0.34, t + 0.04);
+        this.noiseHit(0.5, 0.42, t, 'lowpass', 1700 * this.jmul(0.1), 130, 0.7);
+        this.tone(92 * this.jmul(0.05), 'sine', 0.4, 0.005, 0.5, t, this.jit(14), 44);
+        this.tone(147 * this.jmul(0.05), 'triangle', 0.16, 0.01, 0.34, t + 0.04);
         break;
       case 'hurt':
         this.duck(0.5, 240);
-        this.tone(168, 'sawtooth', 0.3, 0.004, 0.26, t, 0, 74);
-        this.noiseHit(0.34, 0.24, t, 'bandpass', 620, 180, 0.8);
+        this.tone(168 * this.jmul(0.07), 'sawtooth', 0.3 * this.jmul(0.1),
+          0.004, 0.26, t, this.jit(22), 74);
+        this.noiseHit(0.34, 0.24, t, 'bandpass', 620 * this.jmul(0.12), 180, 0.8);
         break;
       case 'dash':
         this.noiseHit(0.24, 0.24, t, 'highpass', 380, 2600, 0.7);
         break;
       case 'parry':
-        this.tone(1568, 'square', 0.2, 0.002, 0.1, t);
-        this.tone(2093, 'sine', 0.16, 0.002, 0.22, t + 0.008);
-        this.noiseHit(0.24, 0.1, t, 'highpass', 2600, 5200, 2.2);
+        this.duck(0.75, 140);
+        this.tone(1568 * this.jmul(0.03), 'square', 0.2 * this.jmul(0.15),
+          0.002, 0.1, t, this.jit(25));
+        this.tone(2093 * this.jmul(0.03), 'sine', 0.16, 0.002, 0.22, t + 0.008);
+        this.noiseHit(0.24, 0.1, t, 'highpass', 2600 * this.jmul(0.1), 5200, 2.2);
         break;
       case 'pickup': {
         const scale = [523.25, 587.33, 659.25, 783.99, 880];
@@ -265,7 +288,8 @@ export class AudioEngine {
         break;
       case 'footstep':
         if (!this.gate('footstep', 150)) return;
-        this.noiseHit(0.075, 0.09, t, 'bandpass', 420 + v * 90, 180, 1.4);
+        this.noiseHit(0.075 * this.jmul(0.25), 0.09 * this.jmul(0.2), t,
+          'bandpass', (420 + v * 90) * this.jmul(0.18), 180, 1.4);
         break;
       case 'death':
         this.duck(0.15, 3000);
@@ -428,21 +452,81 @@ export class AudioEngine {
 
   setIntensity(v: number): void {
     this.intensity = Math.max(0, Math.min(1, v));
+    this.refreshTension();
+  }
+
+  /** Called by Embertide system: true while a tide is active. */
+  setEmbertide(active: boolean): void {
+    this.embertideActive = active;
+    this.refreshTension();
+  }
+
+  /** Number of enemies near the player; feeds the tension layer. */
+  setNearbyEnemies(n: number): void {
+    this.nearbyEnemies = Math.max(0, n);
+    this.refreshTension();
+  }
+
+  /** Blend calm bed vs tension layer with a slow crossfade. */
+  private refreshTension(): void {
+    const crowd = Math.min(1, this.nearbyEnemies / 6);
+    const target = Math.max(
+      this.embertideActive ? 0.85 : 0,
+      Math.max(crowd, this.intensity),
+    );
+    this.setTension(target);
+  }
+
+  /** Explicit crossfade control (0 = calm only, 1 = full tension). */
+  setTension(v: number): void {
+    const target = Math.max(0, Math.min(1, v));
+    this.tension = target;
+    if (!this.ctx || !this.calmLayer || !this.tensionLayer) return;
+    const t = this.ctx.currentTime;
+    const ramp = 2.2; // slow, restrained crossfade
+    const cg = this.calmLayer.gain;
+    const tg = this.tensionLayer.gain;
+    cg.cancelScheduledValues(t);
+    cg.setValueAtTime(cg.value, t);
+    cg.linearRampToValueAtTime(1 - 0.55 * target, t + ramp);
+    tg.cancelScheduledValues(t);
+    tg.setValueAtTime(tg.value, t);
+    tg.linearRampToValueAtTime(target, t + ramp);
+  }
+
+  /** Build the two music sub-buses under musicBus (idempotent). */
+  private buildLayers(): void {
+    if (this.layersBuilt || !this.ctx || !this.musicBus) return;
+    const ctx = this.ctx;
+    this.calmLayer = ctx.createGain();
+    this.calmLayer.gain.value = 1;
+    this.calmLayer.connect(this.musicBus);
+    this.tensionLayer = ctx.createGain();
+    this.tensionLayer.gain.value = 0;
+    this.tensionLayer.connect(this.musicBus);
+    this.layersBuilt = true;
   }
 
   /**
    * Adaptive score: a slow drone bed plus a modal melody whose density
    * follows combat intensity. Aeolian on D, which reads as folk-mythic
    * rather than fantasy-orchestral pastiche.
+   *
+   * Two layers under musicBus:
+   *   calmLayer    — low drone/pad, always audible
+   *   tensionLayer — detuned minor-second drone + heartbeat, fades in on
+   *                  Embertide / crowding / high intensity
    */
   startMusic(): void {
     if (!this.ctx || !this.musicBus || this.musicTimer !== null) return;
     const ctx = this.ctx;
+    this.buildLayers();
 
-    const drone = (freq: number, gain: number): void => {
+    const drone = (freq: number, gain: number, dest: GainNode, detune = 0): void => {
       const o = ctx.createOscillator();
       o.type = 'sine';
       o.frequency.value = freq;
+      o.detune.value = detune;
       const g = ctx.createGain();
       g.gain.value = gain;
       const lfo = ctx.createOscillator();
@@ -451,27 +535,37 @@ export class AudioEngine {
       lg.gain.value = gain * 0.45;
       lfo.connect(lg).connect(g.gain);
       lfo.start();
-      o.connect(g).connect(this.musicBus as GainNode);
+      o.connect(g).connect(dest);
       o.start();
     };
-    drone(73.42, 0.05);
-    drone(110, 0.032);
-    drone(146.83, 0.02);
+
+    const calm = this.calmLayer as GainNode;
+    const tense = this.tensionLayer as GainNode;
+    // Calm bed: D drone + fifth + octave.
+    drone(73.42, 0.05, calm);
+    drone(110, 0.032, calm);
+    drone(146.83, 0.02, calm);
+    // Tension bed: flat-second rub and a low growl, unsettled but quiet.
+    drone(77.78, 0.038, tense, -8);
+    drone(155.56, 0.022, tense, 11);
+    drone(58.27, 0.03, tense);
 
     const dAeolian = [146.83, 164.81, 174.61, 196, 220, 233.08, 261.63, 293.66];
     const tick = (): void => {
       if (!this.ctx || !this.musicBus) return;
       const t = this.ctx.currentTime + 0.02;
       this.step++;
-      const density = 0.18 + this.intensity * 0.55;
+      const heat = Math.max(this.intensity, this.tension);
+      const density = 0.18 + heat * 0.55;
       if (Math.random() < density) {
         const idx = Math.floor(Math.random() * dAeolian.length);
         const f = (dAeolian[idx] ?? 146.83) * (Math.random() < 0.25 ? 2 : 1);
         const o = ctx.createOscillator();
-        o.type = this.intensity > 0.5 ? 'triangle' : 'sine';
+        o.type = heat > 0.5 ? 'triangle' : 'sine';
         o.frequency.value = f;
+        o.detune.value = this.jit(6);
         const g = ctx.createGain();
-        const peak = 0.05 + this.intensity * 0.05;
+        const peak = 0.05 + heat * 0.05;
         g.gain.setValueAtTime(0.0001, t);
         g.gain.exponentialRampToValueAtTime(peak, t + 0.08);
         g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
@@ -479,17 +573,18 @@ export class AudioEngine {
         dly.delayTime.value = 0.36;
         const fb = ctx.createGain();
         fb.gain.value = 0.28;
+        const dest = this.tension > 0.5 ? tense : calm;
         o.connect(g);
-        g.connect(this.musicBus);
+        g.connect(dest);
         g.connect(dly);
         dly.connect(fb).connect(dly);
-        dly.connect(this.musicBus);
+        dly.connect(dest);
         o.start(t);
         o.stop(t + 1.6);
       }
       // Heartbeat percussion only when combat is hot.
-      if (this.intensity > 0.45 && this.step % 2 === 0) {
-        this.noiseHit(0.08 * this.intensity, 0.12, t, 'lowpass', 220, 70, 0.7);
+      if (heat > 0.45 && this.step % 2 === 0) {
+        this.noiseHit(0.08 * heat, 0.12, t, 'lowpass', 220, 70, 0.7);
       }
     };
     this.musicTimer = window.setInterval(tick, 480);
@@ -535,5 +630,12 @@ export class AudioEngine {
   uiBack(): void { this.play('ui-back'); }
   error(): void { this.play('error'); }
   footstep(v = 0): void { this.play('footstep', v); }
-  setMood(_m: 'calm' | 'combat' | 'boss'): void { /* intensity drives music; hook reserved */ }
+  uiClick(): void { this.play('ui'); }
+  parry(): void { this.play('parry'); }
+  hurt(): void { this.play('hurt'); }
+  death(): void { this.play('death'); }
+  levelup(): void { this.play('levelup'); }
+  setMood(m: 'calm' | 'combat' | 'boss'): void {
+    this.setTension(m === 'boss' ? 1 : m === 'combat' ? 0.6 : 0);
+  }
 }

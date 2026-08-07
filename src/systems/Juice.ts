@@ -13,6 +13,16 @@ interface Particle {
   size1: number;
 }
 
+interface Ring {
+  mesh: THREE.Mesh;
+  mat: THREE.MeshBasicMaterial;
+  life: number;
+  maxLife: number;
+  r0: number;
+  r1: number;
+  alpha0: number;
+}
+
 /**
  * Trauma-based screen shake + hit-stop + GPU particles + floating numbers.
  * Trauma is quadratic so small hits barely move and big hits punch, and it
@@ -41,7 +51,14 @@ export class JuiceSystem {
   private vignetteEl: HTMLDivElement | null = null;
   private numbersEl: HTMLDivElement | null = null;
 
+  // Pooled impact rings (expanding + fading discs). Cheap, hard-capped.
+  private readonly RING_MAX = 12;
+  private rings: Ring[] = [];
+  private ringCursor = 0;
+  private ringGeo: THREE.RingGeometry | null = null;
+
   constructor(scene: THREE.Scene) {
+    this.initRings(scene);
     this.geo = new THREE.BufferGeometry();
     this.pos = new Float32Array(this.MAX * 3);
     this.col = new Float32Array(this.MAX * 3);
@@ -221,21 +238,120 @@ export class JuiceSystem {
         this.burst(pos, 16, color, 5.2, 0.5, 0.26);
         break;
       case 'large':
-        this.addTrauma(0.55);
-        this.hitStop(85);
+        this.addTrauma(0.6);
+        this.hitStop(95);
         this.burst(pos, 34, color, 7.4, 0.68, 0.34);
-        this.burst(pos, 12, PALETTE.bone, 4.2, 0.5, 0.2);
-        this.flash('#EFE9DC', 0.16, 110);
+        this.burst(pos, 14, PALETTE.bone, 4.6, 0.5, 0.22);
+        // Ember ground ring + strong ember screen pulse so the damage flash reads.
+        this.pop(pos.x, pos.y, pos.z, PALETTE.ember, 2.8, 0.5, 0.85);
+        this.flashNum(PALETTE.ember, 0.42, 200);
         break;
       case 'huge':
-        this.addTrauma(0.95);
-        this.hitStop(140);
+        this.addTrauma(1.0);
+        this.hitStop(150);
         this.burst(pos, 70, color, 11, 1.0, 0.46);
         this.burst(pos, 30, PALETTE.palegold, 6.5, 0.9, 0.3);
-        this.flash('#D4763F', 0.3, 220);
+        this.pop(pos.x, pos.y, pos.z, PALETTE.ember, 3.6, 0.6, 0.95);
+        this.flashNum(PALETTE.ember, 0.6, 320);
         break;
       default:
         break;
+    }
+  }
+
+  private initRings(scene: THREE.Scene): void {
+    // One shared unit-radius ring geometry; per-instance scale drives growth.
+    this.ringGeo = new THREE.RingGeometry(0.72, 1.0, 28);
+    for (let i = 0; i < this.RING_MAX; i++) {
+      const mat = new THREE.MeshBasicMaterial({
+        color: PALETTE.ember,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+      });
+      const mesh = new THREE.Mesh(this.ringGeo, mat);
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.visible = false;
+      mesh.frustumCulled = false;
+      mesh.renderOrder = 3;
+      scene.add(mesh);
+      this.rings.push({ mesh, mat, life: 0, maxLife: 1, r0: 0.3, r1: 2, alpha0: 0.5 });
+    }
+  }
+
+  /**
+   * Short-lived expanding ground ring at a world position.
+   * Used for enemy death / soul bank / heavy landings. Pooled, max 12 live.
+   */
+  pop(
+    x: number, y: number, z: number,
+    color: number = PALETTE.ember,
+    radius = 2.6, life = 0.5, alpha = 0.8,
+  ): void {
+    const r = this.rings[this.ringCursor];
+    this.ringCursor = (this.ringCursor + 1) % this.RING_MAX;
+    if (!r) return;
+    r.mesh.position.set(x, y + 0.06, z);
+    r.mesh.rotation.x = -Math.PI / 2;
+    r.mesh.rotation.z = Math.random() * Math.PI;
+    const rad = Math.max(2.0, radius);
+    r.mat.color.setHex(color);
+    r.r0 = rad * 0.22;
+    r.r1 = rad;
+    r.maxLife = life;
+    r.life = life;
+    r.alpha0 = this.reduceFlash ? alpha * 0.5 : alpha;
+    r.mesh.scale.setScalar(r.r0);
+    r.mat.opacity = r.alpha0;
+    r.mesh.visible = true;
+  }
+
+  /** Vector convenience wrapper for pop(). */
+  impactBurst(origin: THREE.Vector3, color: number = PALETTE.ember, radius = 2.6): void {
+    this.pop(origin.x, origin.y, origin.z, color, radius);
+  }
+
+  /**
+   * Parry feedback: a tight bone-white screen kiss plus an ember ring.
+   * Deliberately shorter and cooler than the damage flash so the two read apart.
+   */
+  parryFlash(origin?: THREE.Vector3): void {
+    // Bone-white screen kiss — bright and held a beat longer so the parry reads instantly.
+    this.flashNum(PALETTE.bone, 0.5, 170);
+    // Ember-tinted punch: harder shake + slightly longer, embered hit-stop.
+    this.addTrauma(0.34);
+    this.hitStop(95);
+    if (origin) {
+      // Big ember ground ring.
+      this.pop(origin.x, origin.y, origin.z, PALETTE.ember, 3.0, 0.45, 0.9);
+      // Bone-white "kiss" ring just inside it.
+      this.pop(origin.x, origin.y, origin.z, PALETTE.bone, 2.2, 0.4, 0.85);
+      this.burst(origin, 22, PALETTE.palegold, 6.5, 0.4, 0.22, -3, 1.5);
+      this.burst(origin, 14, PALETTE.ember, 8.5, 0.45, 0.28, -5, 1.2);
+    }
+  }
+
+  /** Strong ember (0xd9763a) screen pulse for heavy hits / big damage. */
+  damageFlash(): void {
+    this.flashNum(PALETTE.ember, 0.5, 260);
+  }
+
+  private updateRings(dt: number): void {
+    for (let i = 0; i < this.rings.length; i++) {
+      const r = this.rings[i];
+      if (!r || r.life <= 0) continue;
+      r.life -= dt;
+      if (r.life <= 0) {
+        r.mesh.visible = false;
+        r.mat.opacity = 0;
+        continue;
+      }
+      const k = 1 - r.life / r.maxLife;      // 0 -> 1 over lifetime
+      const ease = 1 - (1 - k) * (1 - k);     // ease-out expansion
+      r.mesh.scale.setScalar(r.r0 + (r.r1 - r.r0) * ease);
+      r.mat.opacity = r.alpha0 * (1 - k) * (1 - k);
     }
   }
 
@@ -245,6 +361,7 @@ export class JuiceSystem {
 
     if (this.trauma > 0) this.trauma = Math.max(0, this.trauma - this.decay * dt);
     this.t += dt;
+    this.updateRings(dt);
 
     const posAttr = this.geo.attributes.position as THREE.BufferAttribute;
     const colAttr = this.geo.attributes.color as THREE.BufferAttribute;
