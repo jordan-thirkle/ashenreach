@@ -123,7 +123,7 @@ export function scatterChunk(
 ): ScatterInstance[] {
   const rng = makeRNG(`${seedStr}:scatter:${cx}:${cz}`);
   const out: ScatterInstance[] = [];
-  const attempts = Math.round(size * size * 0.045 * quality);
+  const attempts = Math.round(size * size * 0.062 * quality);
 
   for (let i = 0; i < attempts; i++) {
     const x = cx + rng.range(0, size);
