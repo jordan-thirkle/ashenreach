@@ -40,6 +40,20 @@ export type GameMode = 'menu' | 'playing' | 'paused' | 'dead' | 'won';
 const FIXED_DT = 1 / 60;
 const MAX_STEPS = 5;
 
+
+// Per-archetype impact feel - makes weapons read distinct without new systems.
+// hitMul scales the proven JuiceSystem hit-stop; shake scales camera trauma.
+const WEAPON_FEEL: Record<string, { hitMul: number; shake: number }> = {
+  blade: { hitMul: 0.7, shake: 0.18 },
+  spear: { hitMul: 0.85, shake: 0.2 },
+  censer: { hitMul: 0.75, shake: 0.16 },
+  glaive: { hitMul: 1.15, shake: 0.3 },
+  maul: { hitMul: 1.7, shake: 0.55 },
+};
+function weaponFeel(arch: string | undefined): { hitMul: number; shake: number } {
+  return WEAPON_FEEL[arch ?? 'blade'] ?? WEAPON_FEEL.blade;
+}
+
 export class Game {
   private container: HTMLElement;
   private renderer: THREE.WebGLRenderer;
@@ -575,6 +589,7 @@ export class Game {
         this.player.pos.clone().addScaledVector(fwd, reach * 0.6).setY(this.player.pos.y + 1.1),
         t.color);
       this.audio.impact(chain === 3, this.player.combo);
+      this.juice.addTrauma(weaponFeel(weapon?.archetype).shake * 0.5);
       if (this.stats.lifesteal > 0) {
         this.player.hp = Math.min(this.player.maxHp,
           this.player.hp + Math.round(hits * 3 * this.stats.lifesteal * 10));
@@ -589,8 +604,11 @@ export class Game {
     e.hp -= damage;
     e.flashT = 0.14;
     // Hit-stop sells weight: a brief global freeze on impact (proven JuiceSystem
-    // timeScale freeze). Longer on crits so they land with real punch.
-    this.juice.hitStop(crit ? 110 : 55);
+    // timeScale freeze). Scaled by weapon archetype + crits so each weapon reads
+    // distinct - a maul lands like a maul, a blade like a blade.
+    const feel = weaponFeel(this.save.equipment.weapon?.weapon?.archetype);
+    this.juice.hitStop(Math.round((crit ? 110 : 55) * feel.hitMul));
+    this.juice.addTrauma(feel.shake);
     e.staggerT = Math.max(e.staggerT, crit ? 0.34 : 0.16);
     // Knockback reads as impact and creates spacing.
     const away = new THREE.Vector3(e.pos.x - this.player.pos.x, 0, e.pos.z - this.player.pos.z)
