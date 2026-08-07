@@ -34,3 +34,7 @@ Thumbs.db
 tests/e2e/shots/
 coverage/
 tmp/
+# e2e report artifacts (regenerated each run)
+tests/e2e/REPORT.md
+tests/e2e/metrics.json
+tests/e2e/report.json

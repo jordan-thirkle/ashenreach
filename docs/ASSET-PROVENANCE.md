@@ -19,3 +19,17 @@ Procedural 128x128 glyphs drawn in code (`tools/assetgen/icons.mjs`).
 
 ## Licence
 MIT code. Assets: public-domain by construction (author is the generator).
+
+## Exceptions (added 2026-08-07)
+Two external, licence-clean resources were introduced to lift visual/audio quality
+without reinventing working tools:
+
+- Ground albedo: public/textures/ground_albedo.jpg is the CC-BY ground texture
+  from the three.js examples repository. A tangent-space normal map is DERIVED
+  in-engine from that albedo (Sobel on luminance, src/world/WorldRenderer.ts) —
+  no separate normal download. This is the one photographic-source texture;
+  everything else remains procedural.
+- Neural voice lines: lore and objective narration (public/voice/*.mp3) is
+  synthesised with edge-tts (Microsoft neural TTS, en-GB-ThomasNeural), a free
+  hosted service with no API key. The game plays these via Web Audio and falls
+  back to the browser SpeechSynthesis API only for lines without a pre-bake.
