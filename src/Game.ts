@@ -943,8 +943,11 @@ export class Game {
       if (this.bossEnemy) {
         this.bossActive = true;
         this.audio.bossStart();
+        this.audio.setMood('boss');
+        this.audio.setTension(0.5);
         this.juice.addTrauma(0.9);
         subtitle(this.hud, 'THE ASHEN CROWN', 5000);
+        this.audio.narrate('The Ashen Crown. The debt you carry ends here.');
       }
     }
 
@@ -957,14 +960,21 @@ export class Game {
         b.phase = wantPhase;
         b.staggerT = 1.4;
         this.juice.feedback('huge', b.pos.clone().setY(b.pos.y + 4), PALETTE.rustBright);
+        this.juice.addTrauma(0.7);
         this.audio.bossPhase(wantPhase);
+        this.audio.setTension(0.35 + wantPhase * 0.22);
         toast(this.hud, `The Crown breaks — phase ${wantPhase}`, 'bad');
+        if (wantPhase === 3) {
+          subtitle(this.hud, 'It remembers what it was. Hold.', 4200);
+          this.audio.narrate('It remembers what it was. Hold, Bearer.');
+        }
         this.spawner.spawnPack(b.pos.x, b.pos.z, 3 + wantPhase, this.progress.level, this.embertide);
       }
       showBoss(this.hud, b.def.name, Math.max(0, hp01), b.phase);
       if (!b.alive) showBoss(this.hud, null);
     } else {
       showBoss(this.hud, null);
+      if (this.bossKilled) this.audio.setTension(0);
     }
   }
 
