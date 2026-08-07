@@ -50,6 +50,7 @@ export class JuiceSystem {
   private flashEl: HTMLDivElement | null = null;
   private vignetteEl: HTMLDivElement | null = null;
   private numbersEl: HTMLDivElement | null = null;
+  private dirPool: HTMLDivElement[] = [];
 
   // Pooled impact rings (expanding + fading discs). Cheap, hard-capped.
   private readonly RING_MAX = 12;
@@ -185,6 +186,36 @@ export class JuiceSystem {
     el.style.setProperty('--dx', `${drift}px`);
     this.numbersEl.appendChild(el);
     window.setTimeout(() => el.remove(), 1000);
+  }
+
+  /** Directional damage indicator: a brief edge arrow showing where a hit came from. */
+  dirMark(ang: number): void {
+    if (!this.numbersEl || this.reduceFlash) return;
+    let el = this.dirPool.pop();
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'hurt-dir';
+      this.numbersEl.appendChild(el);
+    }
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    const R = Math.min(cx, cy) * 0.72;
+    const x = cx + R * Math.sin(ang);
+    const y = cy - R * Math.cos(ang);
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.transform = `translate(-50%, -50%) rotate(${ang}rad)`;
+    el.style.opacity = '0.9';
+    el.style.display = 'block';
+    const start = performance.now();
+    const dur = 520;
+    const tick = (): void => {
+      const k = (performance.now() - start) / dur;
+      if (k >= 1) { el.style.display = 'none'; this.dirPool.push(el); return; }
+      el.style.opacity = String(0.9 * (1 - k));
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 
   burst(

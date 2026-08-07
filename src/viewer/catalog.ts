@@ -70,12 +70,6 @@ export function buildAssetCatalog(): ViewerModel[] {
   cat.push({ id: 'free-fox', name: 'Fox (CC0 rig+anim)', category: 'enemy',
     build: () => new THREE.Group(), gltfId: 'fox',
     note: 'Free Apache-2.0 rigged + animated creature. Demonstrates skeletal animation.' });
-  cat.push({ id: 'free-boombox', name: 'BoomBox (CC0 prop)', category: 'prop',
-    build: () => new THREE.Group(), gltfId: 'boombox',
-    note: 'Free Apache-2.0 PBR prop. Used as a world object example.' });
-  cat.push({ id: 'free-duck', name: 'Duck (CC0 prop)', category: 'prop',
-    build: () => new THREE.Group(), gltfId: 'duck',
-    note: 'Free Apache-2.0 PBR prop.' });
   return cat;
 }
 

@@ -23,8 +23,6 @@ export interface LoadedModel {
 const SOURCES: Record<string, string> = {
   cesiumman: 'assets/models/cesiumman.glb',
   fox: 'assets/models/fox.glb',
-  boombox: 'assets/models/boombox.glb',
-  duck: 'assets/models/duck.glb',
 };
 
 const cache = new Map<string, { object: THREE.Group; anims: THREE.AnimationClip[] }>();

@@ -104,6 +104,7 @@ export class Game {
   private lastFps = 60;
   private autoQualityDone = false;
   private running = false;
+  private loadEl: HTMLDivElement | null = null;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -125,6 +126,12 @@ export class Game {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(this.renderer.domElement);
     this.renderer.domElement.className = 'game-canvas';
+
+    this.loadEl = document.createElement('div');
+    this.loadEl.className = 'load-screen';
+    this.loadEl.innerHTML = '<div class="load-mark">◆</div><div class="load-title">ASHENREACH</div><div class="load-sub">Carrying the dead home…</div><div class="load-bar"><span></span></div>';
+    this.loadEl.style.display = 'none';
+    container.appendChild(this.loadEl);
 
     this.input = new InputManager(this.renderer.domElement, this.settings);
     this.audio = new AudioEngine(this.settings);
@@ -151,6 +158,13 @@ export class Game {
   }
 
   // ------------------------------------------------------------ lifecycle
+
+  private showLoadScreen(): void {
+    if (this.loadEl) this.loadEl.style.display = 'flex';
+  }
+  private hideLoadScreen(): void {
+    if (this.loadEl) this.loadEl.style.display = 'none';
+  }
 
   boot(): void {
     this.screens.showMenu(hasSave(), loadScores(), false);
@@ -251,6 +265,8 @@ export class Game {
   // ----------------------------------------------------------- run setup
 
   private startRun(seed: string, name: string, daily: boolean, biome: 'highland' | 'winter' = 'highland'): void {
+    this.showLoadScreen();
+    requestAnimationFrame(() => {
     this.teardownRun();
     this.save = newSave(seed, name);
     this.save.daily = daily;
@@ -265,6 +281,8 @@ export class Game {
     subtitle(this.hud, 'The Reach remembers every step you take.', 5200);
     toast(this.hud, `Seed: ${seed}`, 'info');
     this.persist();
+    this.hideLoadScreen();
+    });
   }
 
   private syncRelicHud(): void {
@@ -280,6 +298,8 @@ export class Game {
   }
 
   private continueRun(): void {
+    this.showLoadScreen();
+    requestAnimationFrame(() => {
     const data = loadGame();
     if (!data) {
       this.screens.close();
@@ -308,6 +328,8 @@ export class Game {
     this.runStartMs = performance.now() - data.stats.timeMs;
     void this.audio.resume();
     this.audio.startMusic();
+    this.hideLoadScreen();
+    });
   }
 
   private buildWorld(seed: string, biome: 'highland' | 'winter' = 'highland'): void {
@@ -701,6 +723,8 @@ export class Game {
 
     this.juice.addTrauma(0.42);
     this.juice.flash('#6E2A28', 0.28, 200);
+    const ang = Math.atan2(e.pos.z - this.player.pos.z, e.pos.x - this.player.pos.x) - this.player.facing;
+    this.juice.dirMark(ang);
     this.audio.playerHurt();
     this.player.combo = 0;
     this.player.chain = 0;
