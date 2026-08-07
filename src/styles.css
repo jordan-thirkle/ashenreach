@@ -1057,3 +1057,34 @@ html, body {
 ::-webkit-scrollbar-track { background: rgba(20, 23, 26, 0.4); }
 ::-webkit-scrollbar-thumb { background: rgba(217, 210, 197, 0.18); }
 ::-webkit-scrollbar-thumb:hover { background: rgba(217, 210, 197, 0.3); }
+
+/* Top-center current-objective banner - always-on direction (brand: graphite + palegold) */
+.objective-banner {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(70vw, 560px);
+  padding: 6px 16px;
+  background: linear-gradient(180deg, rgba(20,23,26,0.82), rgba(20,23,26,0.62));
+  border: 1px solid rgba(201,162,39,0.55);
+  border-radius: 999px;
+  color: #efe9dc;
+  font: 600 13px/1.2 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 5;
+}
+.objective-banner.active { opacity: 1; }
+.objective-banner::before {
+  content: "\25C6";
+  color: #c9a227;
+  margin-right: 8px;
+  font-size: 11px;
+}

@@ -29,6 +29,7 @@ export interface HudRefs {
   bossName: HTMLElement;
   subtitle: HTMLElement;
   relicPanel: HTMLElement;
+  objectiveBanner: HTMLElement;
 }
 
 export function buildHud(parent: HTMLElement): HudRefs {
@@ -118,6 +119,10 @@ export function buildHud(parent: HTMLElement): HudRefs {
   bossBar.appendChild(bossTrack);
   root.appendChild(bossBar);
 
+  // --- top-center: current objective banner (always-on direction) ---
+  const objectiveBanner = el('div', 'objective-banner');
+  root.appendChild(objectiveBanner);
+
   // --- right: quest tracker ---
   const questPanel = el('div', 'quest-panel');
   root.appendChild(questPanel);
@@ -152,7 +157,7 @@ export function buildHud(parent: HTMLElement): HudRefs {
     root, hpFill, hpText, stamFill, xpFill, levelText,
     soulCount, soulRing, emberCount, comboEl, questPanel, toastWrap,
     markerWrap, crosshair, interactPrompt, embertide, biomeName,
-    compass, bossBar, bossFill, bossName, subtitle, relicPanel,
+    compass, bossBar, bossFill, bossName, subtitle, relicPanel, objectiveBanner,
   };
 }
 
@@ -242,7 +247,11 @@ export function updateQuests(
   h: HudRefs, active: QuestDef[], progress: Record<string, number[]>,
 ): void {
   h.questPanel.replaceChildren();
-  if (active.length === 0) return;
+  if (active.length === 0) {
+    h.objectiveBanner.textContent = 'The Reach is quiet. Carry what you can.';
+    h.objectiveBanner.classList.remove('active');
+    return;
+  }
   const title = el('div', 'quest-panel-title', 'OBJECTIVES');
   h.questPanel.appendChild(title);
   for (const q of active.slice(0, 3)) {
@@ -261,6 +270,17 @@ export function updateQuests(
       box.appendChild(line);
     });
     h.questPanel.appendChild(box);
+  }
+  // Current-objective banner: the single next actionable step, always visible.
+  const first = active[0];
+  const prog = progress[first.id] ?? [];
+  const next = first.steps.find((s, i) => (prog[i] ?? 0) < s.count);
+  if (next) {
+    h.objectiveBanner.textContent = 'Objective — ' + next.text;
+    h.objectiveBanner.classList.add('active');
+  } else {
+    h.objectiveBanner.textContent = first.title + ' — complete';
+    h.objectiveBanner.classList.add('active');
   }
 }
 
