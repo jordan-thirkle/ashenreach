@@ -6,7 +6,7 @@ import { scatterChunk, type ScatterInstance } from './WorldGen';
 import { AmbientRigs } from './AmbientRigs';
 
 const CHUNK = 70;
-const VIEW_CHUNKS = 5;
+const VIEW_CHUNKS = 4;
 
 interface Chunk {
   key: string;
@@ -154,8 +154,8 @@ export class WorldRenderer {
     this.sky.frustumCulled = false;
     scene.add(this.sky);
 
-    scene.fog = new THREE.FogExp2(this.baseFog, winter ? 0.0082 : 0.0068);
-    this.baseFogDensity = winter ? 0.0082 : 0.0068;
+    scene.fog = new THREE.FogExp2(this.baseFog, winter ? 0.0096 : 0.0084);
+    this.baseFogDensity = winter ? 0.0096 : 0.0084;
     this.baseHemiI = winter ? 1.28 : 1.15;
     this.baseSunI = winter ? 1.85 : 2.1;
 
@@ -223,7 +223,7 @@ export class WorldRenderer {
     const mat = this.sky.material as THREE.ShaderMaterial;
     mat.uniforms.emberT!.value = t;
     const fog = this.scene.fog as THREE.FogExp2;
-    fog.density = this.baseFogDensity + t * 0.0042;
+    fog.density = this.baseFogDensity + t * 0.0046;
     fog.color.setHex(this.baseFog).lerp(new THREE.Color(this.pal.rust), t * 0.42);
     this.hemi.intensity = this.baseHemiI - t * 0.35;
     this.sun.intensity = this.baseSunI - t * 0.5;

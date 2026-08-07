@@ -6,7 +6,8 @@ export type Vec3 = { x: number; y: number; z: number };
 export type BiomeId = 'ashflats' | 'moorland' | 'pinewood' | 'crags' | 'mire' | 'scorch';
 
 export type PoiKind =
-  | 'cairn' | 'ruin' | 'camp' | 'shrine' | 'barrow' | 'watchtower' | 'hollow' | 'grove';
+  | 'cairn' | 'ruin' | 'camp' | 'shrine' | 'barrow' | 'watchtower' | 'hollow' | 'grove'
+  | 'lookout' | 'cache' | 'hazard';
 
 export type Rarity = 'common' | 'fine' | 'rare' | 'relic' | 'mythic';
 export type DamageType = 'physical' | 'ember' | 'frost' | 'rot';

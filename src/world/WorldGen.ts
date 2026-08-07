@@ -8,6 +8,7 @@ const NAME_B = ['barrow', 'cairn', 'watch', 'hollow', 'fell', 'reach', 'gate', '
 
 const POI_WEIGHTS: Record<PoiKind, number> = {
   cairn: 30, ruin: 16, camp: 14, shrine: 8, barrow: 10, watchtower: 7, hollow: 9, grove: 6,
+  lookout: 7, cache: 11, hazard: 9,
 };
 
 export interface WorldLayout {
@@ -24,6 +25,7 @@ function poiName(rng: RNG, kind: PoiKind): string {
   const label: Record<PoiKind, string> = {
     cairn: 'Cairn', ruin: 'Ruin', camp: 'Camp', shrine: 'Shrine',
     barrow: 'Barrow', watchtower: 'Watchtower', hollow: 'Hollow', grove: 'Grove',
+    lookout: 'Lookout', cache: 'Cache', hazard: 'Hazard',
   };
   return `${a}${b} ${label[kind]}`;
 }

@@ -24,7 +24,7 @@ import { shortLabel, type EquippedRelicView } from './systems/Inventory';
 import { updateRelics } from './ui/Hud';
 import {
   deriveStats, maxHp, computePlayerDamage, computeEnemyDamage,
-  comboTier, carryPenalty, soulBankXp, DIFFICULTY,
+  comboTier, carryPenalty, soulBankXp, DIFFICULTY, applyStrikeJuice,
 } from './systems/Combat';
 import { QuestEngine, initQuests, initProgress, applyReward, grantXp, levelFromXp, type Progress } from './systems/Quests';
 import { runIntro } from './systems/Onboarding';
@@ -650,6 +650,7 @@ export class Game {
       e.staggerT = 1.1;
       e.state = 'stagger';
       this.juice.feedback('large', this.player.pos.clone().setY(this.player.pos.y + 1.2), PALETTE.palegold);
+      applyStrikeJuice({ parried: true, blocked: false, pos: this.player.pos.clone().setY(this.player.pos.y + 1.2) }, this.juice);
       this.audio.parrySuccess();
       toast(this.hud, 'Parried', 'gold');
       this.player.combo += 2;

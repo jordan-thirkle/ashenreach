@@ -263,6 +263,40 @@ export function makePoiStructure(def: PoiDef, terrain: Terrain): THREE.Group {
       }
       break;
     }
+    case 'lookout': {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.45, 6.5, 6), wood);
+      post.position.y = 3.25; post.castShadow = true; g.add(post);
+      const platform = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.4, 2.4), wood);
+      platform.position.y = 6.4; g.add(platform);
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.7, 0.18), stone);
+      rail.position.set(0, 6.9, 1.1); g.add(rail);
+      g.add(new THREE.PointLight(PALETTE.palegold, 3, 12, 2).translateY(6.6));
+      break;
+    }
+    case 'cache': {
+      const chest = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.9, 1.0), wood);
+      chest.position.y = 0.45; chest.castShadow = true; g.add(chest);
+      const lid = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.3, 1.1), stone);
+      lid.position.y = 1.0; g.add(lid);
+      const glow = new THREE.Mesh(new THREE.IcosahedronGeometry(0.3, 0), new THREE.MeshStandardMaterial({
+        color: PALETTE.palegold, emissive: PALETTE.palegold, emissiveIntensity: 1.6,
+      }));
+      glow.position.y = 1.4; g.add(glow);
+      g.add(new THREE.PointLight(PALETTE.palegold, 4, 10, 2).translateY(1.4));
+      break;
+    }
+    case 'hazard': {
+      const vent = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 2.2, 0.6, 9), new THREE.MeshStandardMaterial({
+        color: PALETTE.rust, emissive: PALETTE.rustBright, emissiveIntensity: 1.8, roughness: 0.8,
+      }));
+      vent.position.y = 0.3; g.add(vent);
+      const ember = new THREE.Mesh(new THREE.IcosahedronGeometry(0.7, 0), new THREE.MeshStandardMaterial({
+        color: PALETTE.ember, emissive: PALETTE.ember, emissiveIntensity: 2.6,
+      }));
+      ember.position.y = 1.1; g.add(ember);
+      g.add(new THREE.PointLight(PALETTE.ember, 6, 14, 2).translateY(1.2));
+      break;
+    }
     default: {
       const pit = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 2.6, 1.4, 9), stone);
       pit.position.y = -0.5;

@@ -1,16 +1,16 @@
 {
-  "timestamp": "2026-08-07T01:34:46.050Z",
+  "timestamp": "2026-08-07T01:49:36.104Z",
   "verdict": "PASS",
   "gates": [
     {
       "name": "no-black-screen",
       "pass": true,
-      "detail": "meanLuminance=0.3043 (gate >=0.02)"
+      "detail": "meanLuminance=0.3109 (gate >=0.02)"
     },
     {
       "name": "not-flat-render",
       "pass": true,
-      "detail": "uniqueColors=65 (gate >=32)"
+      "detail": "uniqueColors=69 (gate >=32)"
     },
     {
       "name": "no-console-errors",
@@ -25,7 +25,7 @@
     {
       "name": "game-booted",
       "pass": true,
-      "detail": "frame=15"
+      "detail": "frame=17"
     },
     {
       "name": "enemies-spawned",
@@ -34,7 +34,7 @@
     }
   ],
   "raw": {
-    "timestamp": "2026-08-07T01:34:45.891Z",
+    "timestamp": "2026-08-07T01:49:35.757Z",
     "shots": [
       "01-boot.png",
       "02-combat.png",
@@ -42,8 +42,8 @@
       "04-map.png"
     ],
     "render": {
-      "meanLuminance": 0.3043227069716785,
-      "uniqueColors": 65
+      "meanLuminance": 0.3108813078703709,
+      "uniqueColors": 69
     },
     "metrics": {
       "mode": "playing",
@@ -57,10 +57,10 @@
         "z": -111.23864254105692
       },
       "embertide": 0,
-      "drawCalls": 375,
-      "triangles": 42495,
-      "geometries": 336,
-      "frame": 15
+      "drawCalls": 539,
+      "triangles": 91402,
+      "geometries": 339,
+      "frame": 17
     },
     "consoleErrors": [],
     "consoleWarnings": []
