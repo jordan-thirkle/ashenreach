@@ -49,10 +49,16 @@ PLATFORM: Windows (git-bash / MSYS). Terminal uses POSIX syntax.
 - T2-A (RE-DONE by PM after silent agent failure): quests q_ashbridge + q_wakecall + c_wakecall codex in Quests.ts.
 - T2 integration: tsc clean, 28/28 vitest, build OK, e2e PASS. Pushed d6d15d5. Redeploying.
 
-## Tier 3 (IN FLIGHT — autonomous, per user "keep developing")
-- T3-A: Second biome palette variant (winter slate/peat) — src/world/Terrain.ts, src/world/WorldRenderer.ts
-- T3-B: Relic inventory + equip UI — src/systems/Inventory.ts, src/ui/Hud.ts
-- T3-C: Speedrun/score leaderboard (localStorage) — src/systems/Scores.ts
+## Tier 3 (COMPLETE — deployed)
+- T3-A: winter biome — Palette.ts (PALETTE_WINTER + BiomeVariant + paletteFor + Palette interface), Terrain.ts (biomeTable + variant), WorldRenderer.ts (variant threading). PM fixed typeof-PALETTE literal errors.
+- T3-B: Inventory.ts (relic add/equip, max 3) + Hud.ts equipped-relics panel.
+- T3-C: Scores.ts (localStorage leaderboard + formatTime).
+- T3 integration: tsc clean, 28/28 vitest, build OK, e2e PASS. Pushed 158b857. Redeploying.
+
+## Tier 4 (candidate — pending user go)
+- T4-A: Expose biome choice in run-start UI + wire Game to pass variant to Terrain/WorldRenderer.
+- T4-B: Wire Inventory.equipRelic into Game (relic pickups drop, equip on pickup, stats apply).
+- T4-C: Wire Scores.submit into run-end + a simple end-screen leaderboard panel.
 
 ## Integration batch (PM, after agents return)
 - Full `npm run build` + `npx vitest run` + e2e critic

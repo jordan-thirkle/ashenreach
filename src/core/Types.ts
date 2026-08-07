@@ -160,6 +160,7 @@ export interface Settings {
 export interface SaveData {
   version: number;
   seed: string;
+  biome?: 'highland' | 'winter';
   createdAt: number;
   updatedAt: number;
   daily: boolean;

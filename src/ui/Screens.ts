@@ -10,7 +10,7 @@ export type ScreenName =
   | 'codex' | 'settings' | 'pause' | 'death' | 'victory' | 'none';
 
 export interface ScreenCallbacks {
-  onNewRun: (seed: string, name: string, daily: boolean) => void;
+  onNewRun: (seed: string, name: string, daily: boolean, biome?: 'highland' | 'winter') => void;
   onContinue: () => void;
   onResume: () => void;
   onQuitToMenu: () => void;
@@ -171,11 +171,31 @@ export class Screens {
     diffRow.appendChild(diffSel);
     p.appendChild(diffRow);
 
+    const biomeRow = el('div', 'form-row');
+    biomeRow.appendChild(el('label', '', 'Biome'));
+    const biomeSel = el('select', 'select-input');
+    for (const [v, label] of [
+      ['highland', 'Highland — weathered moor'],
+      ['winter', 'Winter — frozen slate'],
+    ] as const) {
+      const o = el('option', '', label);
+      o.value = v;
+      if (v === 'highland') o.selected = true;
+      biomeSel.appendChild(o);
+    }
+    biomeRow.appendChild(biomeSel);
+    p.appendChild(biomeRow);
+
     const go = el('button', 'btn primary wide-btn', 'Begin');
     go.addEventListener('click', () => {
       this.lastSettings.difficulty = diffSel.value as Settings['difficulty'];
       this.cb.onSettings(this.lastSettings);
-      this.cb.onNewRun(seedIn.value.trim() || 'ashenreach', nameIn.value.trim() || 'Warden', daily);
+      this.cb.onNewRun(
+        seedIn.value.trim() || 'ashenreach',
+        nameIn.value.trim() || 'Warden',
+        daily,
+        biomeSel.value as 'highland' | 'winter',
+      );
     });
     p.appendChild(go);
 

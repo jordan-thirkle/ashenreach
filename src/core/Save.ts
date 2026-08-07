@@ -25,6 +25,7 @@ export function newSave(seed: string, name = 'Warden'): SaveData {
   return {
     version: SAVE_VERSION,
     seed,
+    biome: 'highland',
     createdAt: now,
     updatedAt: now,
     daily: false,

@@ -20,6 +20,8 @@ import { Player } from './entities/Player';
 import { updateEnemy, alertNearby, type Enemy } from './systems/EnemyAI';
 import { Spawner } from './systems/Spawner';
 import { JuiceSystem } from './systems/Juice';
+import { shortLabel, type EquippedRelicView } from './systems/Inventory';
+import { updateRelics } from './ui/Hud';
 import {
   deriveStats, maxHp, computePlayerDamage, computeEnemyDamage,
   comboTier, carryPenalty, soulBankXp, DIFFICULTY,
@@ -110,7 +112,7 @@ export class Game {
     this.audio = new AudioEngine(this.settings);
 
     this.screens = new Screens(container, {
-      onNewRun: (seed, name, daily) => this.startRun(seed, name, daily),
+      onNewRun: (seed, name, daily, biome) => this.startRun(seed, name, daily, biome ?? 'highland'),
       onContinue: () => this.continueRun(),
       onResume: () => this.resume(),
       onQuitToMenu: () => this.quitToMenu(),
@@ -230,12 +232,13 @@ export class Game {
 
   // ----------------------------------------------------------- run setup
 
-  private startRun(seed: string, name: string, daily: boolean): void {
+  private startRun(seed: string, name: string, daily: boolean, biome: 'highland' | 'winter' = 'highland'): void {
     this.teardownRun();
     this.save = newSave(seed, name);
     this.save.daily = daily;
+    this.save.biome = biome;
     this.progress = initProgress();
-    this.buildWorld(seed);
+    this.buildWorld(seed, biome);
     this.screens.close();
     this.mode = 'playing';
     this.runStartMs = performance.now();
@@ -246,6 +249,18 @@ export class Game {
     this.persist();
   }
 
+  private syncRelicHud(): void {
+    if (!this.hud) return;
+    const r = this.save.equipment.relic;
+    const view: EquippedRelicView[] = r
+      ? [{
+          uid: r.uid, defId: r.defId, name: r.name, short: shortLabel(r.name),
+          icon: r.icon, rarity: r.rarity, tier: r.tier, affixes: r.affixes ?? [], flavor: r.flavor ?? '',
+        }]
+      : [];
+    updateRelics(this.hud, view);
+  }
+
   private continueRun(): void {
     const data = loadGame();
     if (!data) {
@@ -254,6 +269,7 @@ export class Game {
     }
     this.teardownRun();
     this.save = data;
+    this.save.biome = data.biome ?? 'highland';
     this.progress = {
       xp: data.xp, level: data.level, skillPoints: data.skillPoints,
       learned: data.learned, embers: data.embers,
@@ -276,17 +292,18 @@ export class Game {
     this.audio.startMusic();
   }
 
-  private buildWorld(seed: string): void {
+  private buildWorld(seed: string, biome: 'highland' | 'winter' = 'highland'): void {
     this.rng = makeRNG(`${seed}:run`);
-    this.terrain = new Terrain(seed);
+    this.terrain = new Terrain(seed, biome);
     this.layout = generateWorld(seed, this.terrain);
-    this.world = new WorldRenderer(this.scene, this.terrain, seed, this.settings.quality);
+    this.world = new WorldRenderer(this.scene, this.terrain, seed, this.settings.quality, biome);
     this.camera = new GameCamera(window.innerWidth / window.innerHeight, this.terrain);
     this.juice = new JuiceSystem(this.scene);
     this.juice.attachDom(this.container);
     this.juice.setShakeScale(this.settings.screenShake);
     this.juice.setReduceFlashing(this.settings.reduceFlashing);
     this.hud = buildHud(this.container);
+    this.syncRelicHud();
 
     if (isTouchDevice()) {
       this.mobile = new MobileControls(this.container, this.input);
@@ -834,6 +851,7 @@ export class Game {
     this.recomputeStats();
     this.audio.equip();
     this.screens.showInventory(this.save.bag, this.save.equipment, this.stats, this.progress.embers);
+    this.syncRelicHud();
   }
 
   private discard(item: Item): void {
@@ -847,6 +865,7 @@ export class Game {
     }
     this.recomputeStats();
     this.screens.showInventory(this.save.bag, this.save.equipment, this.stats, this.progress.embers);
+    this.syncRelicHud();
   }
 
   private useItem(item: Item): void {
@@ -1103,11 +1122,11 @@ export class Game {
   }
 
   /** Test/automation hook: exposes a minimal, safe control surface. */
-  testApi(): { startRun: (seed: string, name: string, daily: boolean) => void; debug: Record<string, unknown> } {
+  testApi(): { startRun: (seed: string, name: string, daily: boolean, biome?: 'highland' | 'winter') => void; debug: Record<string, unknown> } {
     const self = this;
     return {
-      startRun: (seed, name, daily) =>
-        self.startRun(seed ?? `seed-${Date.now().toString(36)}`, name ?? 'Warden', daily ?? false),
+      startRun: (seed, name, daily, biome) =>
+        self.startRun(seed ?? `seed-${Date.now().toString(36)}`, name ?? 'Warden', daily ?? false, biome ?? 'highland'),
       get debug() { return self.debug; },
     };
   }
