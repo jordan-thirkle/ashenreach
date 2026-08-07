@@ -184,6 +184,12 @@ export class WorldRenderer {
     fill.position.set(70, 30, -60);
     scene.add(fill);
 
+    // Rim/back light: separates silhouettes from the fog so the low-poly
+    // forms read as intentional, not flat. Warm ember, opposite the sun.
+    const rim = new THREE.DirectionalLight(0xd9763a, 0.9);
+    rim.position.set(90, 26, -70);
+    scene.add(rim);
+
     // Standing water plane at sea level.
     const wGeo = new THREE.PlaneGeometry(WORLD_HALF * 2.4, WORLD_HALF * 2.4, 1, 1);
     wGeo.rotateX(-Math.PI / 2);
