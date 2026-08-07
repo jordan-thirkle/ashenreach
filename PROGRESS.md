@@ -32,3 +32,28 @@ Critic evidence = real output: the e2e harness HUD metrics (LUM / FPS / frame / 
 - Critic (code-arch + user eyes; vision API down): micro-feedback audit found foundation already deep (damage numbers, tiered blood/bone bursts, ember rings, hit+hurt flash, hit-stop, shake, parry flash, death FX, soul spill, low-HP vignette, wind ambient). Real gap = no visible slash during swing; SwingFx closes it.
 - Verdict: gap closed (slash reads on miss+hit, weapon-tinted). Visual A/B = USER FINAL JUDGE (vision_analyze API blocked upstream).
 - Evidence: tsc clean, 28/28 tests, build OK, e2e PASS (LUM 0.305, 66 colors, 0 errors, 10 enemies), build afd3389.
+
+## Post-migration product acceptance — soul-banking loop (2026-08-07)
+
+- Milestone: start deterministic winter run → kill one real enemy → collect one real soul → bank at a real cairn → reload/continue.
+- Pre-fix engineering evidence: `npm run typecheck` PASS; `npm test` PASS (28/28); `npm run build` PASS.
+- Internal-path evidence: RUNTIME / INTEGRATION VERIFIED only. A temporary probe used running game objects to kill one real enemy, collect one real soul, bank it at a real cairn, persist `xp=181`, `embers=12`, `soulsBanked=1`, reload, and continue with `mode=playing`, `biome=winter`; `errors=[]`, `failedRequests=[]`.
+- Player-path evidence: GAMEPLAY VERIFIED = UNKNOWN / NOT VERIFIED. A separate ordinary W+mouse-control attempt produced no errors but did not reach combat (`souls=0`, `enemies=10`, position barely changed). No internal shortcut was promoted to gameplay evidence.
+- Dependency evidence: `package.json` and `package-lock.json` are authoritative and unchanged. The environment was inconsistent beforehand; the attempted `npm install --ignore-scripts` removed packages and hit EPERM on locked native binaries, leaving `node_modules` incomplete. A controlled `npm ci --ignore-scripts` retry was stopped by the same EPERM on `node_modules/@esbuild/.../esbuild.exe`. Fresh post-fix static gates are therefore BLOCKED, not green.
+- Independent critic: `PASS WITH KNOWN LIMITATIONS`. The internal loop is functionally correct and visually coherent; carried-soul/death-pile/world-state persistence and player-path automation remain open.
+- Verdict: `PASS WITH KNOWN LIMITATIONS`; broader soul-loop milestone is not ACCEPTED as GAMEPLAY VERIFIED.
+
+## Biome persistence fix closure (2026-08-07)
+
+- Change: Continue now calls `buildWorld(data.seed, data.biome)` instead of relying on the Highland default.
+- Runtime evidence: built-artifact probe started a winter run and continued into `mode=playing` with zero console errors.
+- Fresh static gates: BLOCKED. `npm ci --ignore-scripts` was attempted once from unchanged manifests and stopped on EPERM unlinking `node_modules/@rollup/.rollup-win32-x64-msvc-CKVEfkOD/rollup.win32-x64-msvc.node`; no fallback or forced repair was used.
+- Narrow verdict: biome fix is `RUNTIME VERIFIED` and `IMPLEMENTED`, but not fully `ACCEPTED` until fresh post-fix typecheck/tests/build run.
+
+## Post-acceptance operating observations
+
+- Proven migration benefits: bounded milestone selection, dirty-work preservation, runtime-first verification, independent critique, honest evidence downgrading, and conservative Git/publication disposition.
+- Command Code-caused error: `npm install --ignore-scripts` was used as a diagnostic/reconciliation action against an inconsistent generated dependency tree; it removed packages, encountered EPERM on locked native files, and materially worsened local `node_modules` before the later controlled `npm ci` attempt also stopped on EPERM.
+- Evidence lesson: internal game-object transitions prove RUNTIME / INTEGRATION VERIFIED only. Ordinary-control gameplay remains GAMEPLAY UNKNOWN / NOT VERIFIED when controls do not complete the causal chain.
+- Product/environment issues: locked generated binaries, missing local Vite/Vitest/Playwright resolution after failed repair, and an ordinary-control harness that did not reach combat. These do not justify Command Code infrastructure changes from one occurrence.
+- Infrastructure change required: NO. Retain these as Ashenreach operating observations; reopen Command Code only if the same failure class recurs across products.

@@ -313,7 +313,7 @@ export class Game {
       learned: data.learned, embers: data.embers,
       codex: data.codex, discovered: data.discovered,
     };
-    this.buildWorld(data.seed);
+    this.buildWorld(data.seed, data.biome);
     this.player.pos.set(data.pos.x, data.pos.y, data.pos.z);
     this.embertide = data.embertide;
     for (const id of data.litCairns) {
