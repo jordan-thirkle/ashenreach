@@ -23,4 +23,13 @@ function copyDir(src, dest) {
 }
 if (existsSync(web)) copyDir(web, dist);
 
-console.log('Packaged dist/: marketing at /, game at /play.html, viewer at /viewer.html');
+// Keep the dev-log page assets reachable under both /devlog.html and /devlog (Vercel rewrite)
+if (existsSync(join(dist, 'devlog.html'))) {
+  // devlog.html already copied via copyDir; expose /devlog.html and ensure data + js present
+  for (const f of ['devlog.js', 'devlog-data.js']) {
+    if (existsSync(join(dist, f))) continue;
+    if (existsSync(join(web, f))) copyFileSync(join(web, f), join(dist, f));
+  }
+}
+
+console.log('Packaged dist/: marketing at /, game at /play.html, viewer at /viewer.html, devlog at /devlog');

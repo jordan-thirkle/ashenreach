@@ -3,7 +3,8 @@
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/play", "destination": "/play.html" },
-    { "source": "/viewer", "destination": "/viewer.html" }
+    { "source": "/viewer", "destination": "/viewer.html" },
+    { "source": "/devlog", "destination": "/devlog.html" }
   ],
   "headers": [
     {
