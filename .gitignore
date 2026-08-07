@@ -33,3 +33,4 @@ Thumbs.db
 # Test artifacts (keep shots out of git; they are generated)
 tests/e2e/shots/
 coverage/
+tmp/

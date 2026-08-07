@@ -1,5 +1,5 @@
 import type { Item, ItemSlot, Settings, SkillDef, Stats, RunStats, PoiDef } from '../core/Types';
-import { el, icon, itemCard, rarityPip, formatAffix } from './Widgets';
+import { el, icon, itemCard, formatAffix, rarityPip } from './Widgets';
 import { SKILLS } from '../data/Quests';
 import { CODEX } from '../data/Quests';
 import { statSummary } from './Hud';
@@ -330,7 +330,7 @@ export class Screens {
         ((wx + worldHalf) / (worldHalf * 2)) * size,
         ((wz + worldHalf) / (worldHalf * 2)) * size,
       ];
-      ctx.fillStyle = '#22262B';
+      ctx.fillStyle = '#2B3036';
       ctx.fillRect(0, 0, size, size);
 
       // Basin ring
@@ -353,8 +353,8 @@ export class Screens {
         const found = discovered.includes(poi.id);
         const [x, y] = toPx(poi.pos.x, poi.pos.z);
         ctx.fillStyle = found
-          ? (poi.kind === 'cairn' ? '#C9A227' : '#8B9A6B')
-          : 'rgba(217,210,197,0.14)';
+          ? (poi.kind === 'cairn' ? '#EFE9DC' : '#C9A227')
+          : 'rgba(217,210,197,0.20)';
         ctx.beginPath();
         if (poi.kind === 'cairn') {
           ctx.moveTo(x, y - 5);
@@ -386,7 +386,7 @@ export class Screens {
       ctx.beginPath();
       ctx.arc(px, py, 5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = '#22262B';
+      ctx.strokeStyle = '#3B4149';
       ctx.lineWidth = 1.5;
       ctx.stroke();
     }

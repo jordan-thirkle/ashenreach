@@ -12,5 +12,10 @@ Critic evidence = real output: the e2e harness HUD metrics (LUM / FPS / frame / 
 | Round | Builder change | Critic verdict | Evidence (LUM/FPS/frame/enemies) | Build |
 |-------|---------------|----------------|-----------------------------------|-------|
 | 1 | Juice: pooled rings (pop/impactBurst), parryFlash, hit-stop; Camera: terrain collision rewrite | gap-list (reference-wins) — accents (Rust/Palegold) absent in combat/inventory/map; inventory+map too dark (lum 0.109/0.126); combat frame flat | LUM 0.30/66col/369dc/10 enemies/0 err | a2c576c |
-| 2 | TBD (3 builders: accent visibility Juice+Combat; UI legibility Hud+Screens; value contrast Rigs) | TBD | TBD | TBD |
-| 3 (queued) | Perf+atmosphere (WorldRenderer+Renderer+Terrain+EnemyAI); audio-design (Audio adaptive); level-discovery (PointsOfInterest+World POI seeding) | TBD | TBD | TBD |
+| 2 | Accent (Juice+Combat) ✅, Value-contrast (Rigs) ✅, UI legibility (Hud+Screens) ❌429 | partial — 2/3 builders landed; UI legibility killed by API rate-limit | LUM 0.31/71col/10 enemies/0 err | bbe7c97 |
+| 3 | Audio (adaptive bus) ✅; Perf+atmosphere ❌429; Level-discovery ❌timeout | partial — 1/3 landed; perf + POI killed by API outage | same | bbe7c97 |
+
+## Blocked (environment)
+- Folder rename Brawler→Ashenreach: BLOCKED. Hermes terminal backend pins Brawler as its OS cwd; Windows refuses to rename a dir that is any process's cwd. Fix: restart Hermes terminal session or close Brawler workspace in Hermes desktop, then `mv D:/Projects/Brawler D:/Projects/Ashenreach`. Deploy uses --name ashenreach regardless, so product identity is correct.
+- Missing Gauntlet edits (killed by free-key rate-limit/timeout): UI legibility (Hud+Screens), perf+atmosphere (WorldRenderer/Renderer/Terrain/EnemyAI), level-discovery POI seeding (PointsOfInterest/World). Re-dispatch when API stable, or PM edits directly.
+- Round-2A flagged: parryFlash/hitStop wired into Combat.ts but Game.ts enemyStrike must route through applyStrikeJuice() to fire live — not yet done.
