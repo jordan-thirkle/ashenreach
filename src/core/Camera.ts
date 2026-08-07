@@ -57,7 +57,7 @@ export class GameCamera {
 
   update(target: THREE.Vector3, velocity: THREE.Vector3, dt: number): void {
     // Deadzone: the camera target lags the player slightly and leads their velocity.
-    this.lookAhead.set(velocity.x, 0, velocity.z).multiplyScalar(0.16);
+    this.lookAhead.set(velocity.x, 0, velocity.z).multiplyScalar(0.22);
     const want = new THREE.Vector3(
       target.x + this.lookAhead.x,
       target.y + 1.62,

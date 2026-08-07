@@ -481,6 +481,14 @@ export class Game {
         this.juice.burst(this.player.pos.clone().setY(this.player.pos.y + 0.7), 12, PALETTE.ash, 4, 0.36, 0.2, -2);
       },
       () => this.audio.parryReady(),
+      (speed) => {
+        this.audio.footstep(speed > 7 ? 1 : 0);
+        if (Math.random() < 0.5) {
+          this.juice.burst(
+            this.player.pos.clone().setY(this.player.pos.y + 0.05), 3, PALETTE.ash, 2.2, 0.18, 0.12, -1,
+          );
+        }
+      },
     );
     const moved = Math.hypot(this.player.pos.x - before.x, this.player.pos.z - before.z);
     this.save.stats.distance += moved;

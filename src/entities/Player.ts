@@ -51,6 +51,7 @@ export class Player {
   secondWindUsed = false;
   lastGroundY = 0;
   private airT = 0;
+  private stepT = 0;
 
   private weaponGroup: THREE.Group | null = null;
   private stats: Stats;
@@ -101,6 +102,7 @@ export class Player {
     onSwing: (chain: number) => void,
     onDash: () => void,
     onParry: () => void,
+    onFootstep: (speed: number) => void,
   ): void {
     if (this.state === 'dead') {
       this.animT += dt;
@@ -194,13 +196,20 @@ export class Player {
         (this.state === 'parry' ? 0.35 : 1);
 
       if (dir.lengthSq() > 0.001) {
-        this.vel.x = damp(this.vel.x, dir.x * speed, 12, dt);
-        this.vel.z = damp(this.vel.z, dir.z * speed, 12, dt);
-        this.facing = angleDamp(this.facing, Math.atan2(dir.x, dir.z), 14, dt);
+        this.vel.x = damp(this.vel.x, dir.x * speed, 16, dt);
+        this.vel.z = damp(this.vel.z, dir.z * speed, 16, dt);
+        this.facing = angleDamp(this.facing, Math.atan2(dir.x, dir.z), 16, dt);
         if (this.state === 'idle') this.state = 'move';
+        // Footstep cadence scales with ground speed - immersion hook.
+        const sp = Math.hypot(this.vel.x, this.vel.z);
+        this.stepT -= dt;
+        if (this.stepT <= 0 && sp > 1.2) {
+          this.stepT = sp > 7 ? 0.26 : 0.40;
+          onFootstep(sp);
+        }
       } else {
-        this.vel.x = damp(this.vel.x, 0, 14, dt);
-        this.vel.z = damp(this.vel.z, 0, 14, dt);
+        this.vel.x = damp(this.vel.x, 0, 19, dt);
+        this.vel.z = damp(this.vel.z, 0, 19, dt);
         if (this.state === 'move') this.state = 'idle';
       }
     }
@@ -219,6 +228,7 @@ export class Player {
     if (Math.abs(this.pos.y - ground) < 0.15) this.airT = 0;
     else this.airT += dt;
     this.lastGroundY = ground;
+    if (this.state === 'move') this.stepT = Math.max(this.stepT, 0);
 
     this.rig.root.position.copy(this.pos);
     this.rig.root.rotation.y = this.facing;
