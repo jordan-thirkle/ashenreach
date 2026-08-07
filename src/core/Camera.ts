@@ -35,7 +35,11 @@ export class GameCamera {
 
   rotate(dYaw: number, dPitch: number): void {
     this.yaw += dYaw;
-    this.pitch = Math.max(-1.15, Math.min(0.52, this.pitch + dPitch));
+    // Third-person follow cameras stay BEHIND and ABOVE the player. Clamp pitch
+    // to strictly negative so the camera can never swing above the horizon and
+    // render the world upside-down (a known failure when input sign or combat
+    // framing pushed pitch positive).
+    this.pitch = Math.max(-1.15, Math.min(-0.05, this.pitch + dPitch));
   }
 
   zoom(delta: number): void {

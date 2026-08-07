@@ -638,4 +638,23 @@ export class AudioEngine {
   setMood(m: 'calm' | 'combat' | 'boss'): void {
     this.setTension(m === 'boss' ? 1 : m === 'combat' ? 0.6 : 0);
   }
+
+  /**
+   * Narrate a line of lore/objective via the browser SpeechSynthesis API.
+   * Free, no assets, no network. Respects the user's voiceover setting and is a
+   * no-op when speech synthesis is unavailable (older browsers, headless).
+   */
+  narrate(text: string): void {
+    if (!this.settings.voiceover) return;
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.92; u.pitch = 0.85; u.volume = 0.9;
+      const prefer = synth.getVoices().find((v) => /en[-_]GB/i.test(v.lang) && /male|daniel|george|arthur|ralph/i.test(v.name))
+        ?? synth.getVoices().find((v) => /en/i.test(v.lang));
+      if (prefer) u.voice = prefer;
+      synth.cancel(); synth.speak(u);
+    } catch { /* speech unavailable - skip */ }
+  }
 }

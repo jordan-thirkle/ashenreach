@@ -11,7 +11,7 @@ const DEFAULT_BINDS: Record<string, string> = {
 export const DEFAULT_SETTINGS: Settings = {
   masterVolume: 0.8, musicVolume: 0.5, sfxVolume: 0.85,
   screenShake: 1.0, difficulty: 'warden',
-  colorblindMarkers: true, subtitles: true, reduceFlashing: false,
+  colorblindMarkers: true, subtitles: true, voiceover: true, reduceFlashing: false,
   invertY: false, sensitivity: 1.0, quality: 'high',
   keybinds: { ...DEFAULT_BINDS },
 };

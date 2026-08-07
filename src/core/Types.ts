@@ -150,6 +150,7 @@ export interface Settings {
   difficulty: 'wanderer' | 'warden' | 'ashborn';
   colorblindMarkers: boolean;
   subtitles: boolean;
+  voiceover: boolean;
   reduceFlashing: boolean;
   invertY: boolean;
   sensitivity: number;

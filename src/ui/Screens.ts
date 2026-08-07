@@ -485,6 +485,7 @@ export class Screens {
 
     toggle('Colourblind-safe markers', 'colorblindMarkers', 'shape encodes meaning');
     toggle('Subtitles', 'subtitles');
+    toggle('Voiceover (narrated lore)', 'voiceover');
     toggle('Reduce flashing', 'reduceFlashing');
     toggle('Invert vertical look', 'invertY');
 

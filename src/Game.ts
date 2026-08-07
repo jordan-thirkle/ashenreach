@@ -27,6 +27,8 @@ import {
   comboTier, carryPenalty, soulBankXp, DIFFICULTY,
 } from './systems/Combat';
 import { QuestEngine, initQuests, initProgress, applyReward, grantXp, levelFromXp, type Progress } from './systems/Quests';
+import { runIntro } from './systems/Onboarding';
+import { FIRST_OBJECTIVE_FRAME } from './systems/Lore';
 import { rollLoot, makeConsumable } from './data/Items';
 import { QUEST_BY_ID } from './data/Quests';
 import { buildHud, updateVitals, updateCombo, updateEmbertide, updateQuests, toast, subtitle, updateMarkers, updateCompass, showInteract, showBoss, lootPopup, type HudRefs, type MarkerSpec } from './ui/Hud';
@@ -342,6 +344,10 @@ export class Game {
       },
     );
     this.world.setEmbertide(this.embertide);
+
+    // First-spawn onboarding: lore + direction + voice (Ashenreach v1).
+    const firstObj = this.quests.activeDefs[0]?.summary ?? FIRST_OBJECTIVE_FRAME;
+    runIntro(this.hud, this.audio, firstObj);
   }
 
   private equipStartingKit(): void {
