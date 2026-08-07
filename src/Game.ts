@@ -20,6 +20,7 @@ import { Player } from './entities/Player';
 import { updateEnemy, alertNearby, type Enemy } from './systems/EnemyAI';
 import { Spawner } from './systems/Spawner';
 import { JuiceSystem } from './systems/Juice';
+import { SwingFx } from './systems/SwingFx';
 import { shortLabel, type EquippedRelicView } from './systems/Inventory';
 import { updateRelics } from './ui/Hud';
 import {
@@ -64,6 +65,7 @@ export class Game {
   private input: InputManager;
   private audio: AudioEngine;
   private juice!: JuiceSystem;
+  private swingFx!: SwingFx;
   private hud!: HudRefs;
   private screens: Screens;
   private mobile: MobileControls | null = null;
@@ -315,6 +317,7 @@ export class Game {
     this.world = new WorldRenderer(this.scene, this.terrain, seed, this.settings.quality, biome);
     this.camera = new GameCamera(window.innerWidth / window.innerHeight, this.terrain);
     this.juice = new JuiceSystem(this.scene);
+    this.swingFx = new SwingFx(this.scene);
     this.juice.attachDom(this.container);
     this.juice.setShakeScale(this.settings.screenShake);
     this.juice.setReduceFlashing(this.settings.reduceFlashing);
@@ -461,6 +464,7 @@ export class Game {
   private renderFrame(dt: number): void {
     if (!this.camera) return;
     if (this.juice) this.juice.update(dt);
+    if (this.swingFx) this.swingFx.update(dt);
     this.camera.resetShake();
     if (this.juice) this.juice.applyShake(this.camera.cam);
     this.renderer.render(this.scene, this.camera.cam);
@@ -551,6 +555,9 @@ export class Game {
     const reach = (weapon?.reach ?? 2.6) + (chain === 3 ? 0.9 : 0);
     const arc = (weapon?.arc ?? 1.5) * (chain === 3 ? 1.55 : 1);
     this.audio.swing(chain);
+    // Visible slash arc so the swing reads even on a miss (signature game-feel detail).
+    const head = this.player.pos.clone().setY(this.player.pos.y + 1.15);
+    this.swingFx.spawn(head, this.player.facing, arc, weapon?.archetype, reach);
 
     const fwd = new THREE.Vector3(Math.sin(this.player.facing), 0, Math.cos(this.player.facing));
     let hits = 0;
