@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Build Dev Log — Ashenreach | By JTT</title>
+<meta name="description" content="Every commit in Ashenreach's evolution, from the first prompt to the live game. Transparent, including the parts that failed." />
+<meta name="theme-color" content="#22262b" />
+<meta name="color-scheme" content="dark" />
+<meta name="author" content="By JTT" />
+<link rel="canonical" href="https://ashenreach.vercel.app/devlog" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2322262b'/%3E%3Cpath d='M16 6l3 8h-6z' fill='%23d9763a'/%3E%3Crect x='11' y='16' width='10' height='3' fill='%23c9a227'/%3E%3Crect x='9' y='21' width='14' height='3' fill='%23c9a227'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .devlog-hero { position: relative; min-height: 46vh; display: grid; place-items: center; text-align: center; overflow: hidden;
+    background: radial-gradient(120% 80% at 50% -10%, rgba(166,85,47,0.18), transparent 60%), linear-gradient(180deg, #1a1d21 0%, #16191c 70%, #100f0d 100%); }
+  .devlog-hero-inner { max-width: 760px; padding: 24px clamp(16px,4vw,40px); }
+  .stat-row { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+  .stat { background: var(--bg-2); border: 1px solid rgba(239,233,220,0.08); border-radius: 12px; padding: 12px 18px; min-width: 110px; }
+  .stat b { display: block; font-size: 26px; color: var(--palegold); letter-spacing: -0.01em; }
+  .stat span { font-size: 12px; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .filters { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 0 auto 8px; }
+  .filters button { background: var(--bg-2); color: var(--ink-dim); border: 1px solid rgba(239,233,220,0.12); padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 13px; cursor: pointer; }
+  .filters button[aria-pressed="true"] { background: var(--rust); color: #fff; border-color: var(--rust); }
+  .filters button:hover { border-color: var(--palegold); }
+
+  .phase { max-width: var(--maxw); margin: 0 auto; padding-top: clamp(40px,7vw,72px); }
+  .phase-head { border-left: 3px solid var(--palegold); padding-left: 18px; margin-bottom: 14px; }
+  .phase-head h2 { margin: 0 0 4px; }
+  .phase-meta { font-size: 13px; color: var(--ink-dim); letter-spacing: 0.04em; }
+  .repo-badge { display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; padding: 3px 9px; border-radius: 999px; background: rgba(201,162,39,0.14); color: var(--palegold); border: 1px solid rgba(201,162,39,0.3); margin-left: 8px; }
+  .phase-summary { color: var(--ink-dim); max-width: 72ch; margin: 0 0 16px; }
+
+  .failures { background: rgba(110,42,40,0.16); border: 1px solid rgba(166,85,47,0.4); border-left: 3px solid var(--rust); border-radius: 12px; padding: 14px 18px; margin: 0 0 22px; }
+  .failures h3 { margin: 0 0 8px; color: var(--rust-bright); font-size: 14px; text-transform: uppercase; letter-spacing: 0.14em; }
+  .failures ul { margin: 0; padding-left: 18px; color: var(--ink-dim); font-size: 14px; }
+  .failures li { margin: 4px 0; }
+
+  .commit { background: var(--bg-2); border: 1px solid rgba(239,233,220,0.08); border-radius: 12px; padding: 16px 18px; margin: 12px 0; }
+  .commit-top { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .commit-sha { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; color: var(--palegold); background: rgba(201,162,39,0.1); padding: 2px 8px; border-radius: 6px; }
+  .commit-date { font-size: 12px; color: var(--ink-dim); }
+  .commit-author { font-size: 12px; color: var(--ink-dim); }
+  .commit-author::before { content: "by "; opacity: 0.7; }
+  .commit-subj { margin: 8px 0 6px; font-size: 16px; color: var(--bone); line-height: 1.4; }
+  .commit-note { margin: 0; color: var(--ink-dim); font-size: 14px; }
+
+  .loading, .err { text-align: center; color: var(--ink-dim); padding: 40px; }
+  @media (prefers-reduced-motion: reduce) { .scroll-cue { animation: none; } }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <a class="brand" href="index.html" id="top">ASHENREACH</a>
+  <nav aria-label="Primary">
+    <a href="index.html#features">Features</a>
+    <a href="index.html#world">World</a>
+    <a href="index.html#systems">Systems</a>
+    <a href="index.html#faq">FAQ</a>
+    <a href="devlog.html">Dev Log</a>
+    <a class="cta" href="/play">Play free</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="devlog-hero">
+    <div class="devlog-hero-inner">
+      <p class="eyebrow">Build Dev Log</p>
+      <h1>Every commit, in the open.</h1>
+      <p class="lede">From the very first prompt to the live game — including the parts that failed. No curation, no spin. By JTT publishes evidence that leads to conclusions.</p>
+      <div class="stat-row" id="stat-row">
+        <div class="stat"><b id="stat-commits">—</b><span>commits</span></div>
+        <div class="stat"><b id="stat-phases">—</b><span>phases</span></div>
+        <div class="stat"><b>100%</b><span>real history</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: clamp(24px,4vw,40px) clamp(16px,4vw,40px) 0;">
+    <div class="filters" id="filters" role="group" aria-label="Filter by phase"></div>
+  </section>
+
+  <div id="timeline" aria-live="polite">
+    <p class="loading">Loading the dev log…</p>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <p>© By JTT. Ashenreach is a work of fiction. Built browser-native.</p>
+  <nav aria-label="Footer"><a href="index.html#features">Features</a><a href="index.html#world">World</a><a href="index.html#systems">Systems</a><a href="index.html#faq">FAQ</a><a href="devlog.html">Dev Log</a></nav>
+</footer>
+
+<script src="devlog.js" defer></script>
+</body>
+</html>

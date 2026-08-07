@@ -1,0 +1,519 @@
+// AUTO-GENERATED from docs/devlog-data.json by scripts/gen-devlog.mjs.
+// Do not edit by hand — edit the JSON and re-run the generator.
+window.DEVLOG_DATA = {
+  "title": "Ashenreach — Build Dev Log",
+  "subtitle": "Every commit, from the first prompt to the live game. Transparent, including the parts that failed.",
+  "generated": "2026-08-07",
+  "repos": {
+    "driftrun": {
+      "name": "driftrun",
+      "label": "Driftrun (prototype)",
+      "url": "",
+      "status": "Unpublished prototype — local only, superseded by VANGUARD"
+    },
+    "vanguard": {
+      "name": "vanguard",
+      "label": "VANGUARD",
+      "url": "https://github.com/jordan-thirkle/vanguard",
+      "status": "Shipped — 40 commits, archived as the foundation for Ashenreach"
+    },
+    "ashenreach": {
+      "name": "ashenreach",
+      "label": "Ashenreach",
+      "url": "https://github.com/jordan-thirkle/ashenreach",
+      "status": "Live — https://ashenreach.vercel.app"
+    }
+  },
+  "phases": [
+    {
+      "id": "driftrun",
+      "name": "Phase 0 — The first prompt: Driftrun",
+      "repo": "driftrun",
+      "status": "Prototype",
+      "range": "2026-08-05",
+      "summary": "The very first instruction was to build a game with Genex in plain three.js. That produced Driftrun — a neon canyon hover racer — as a single genesis commit. It proved the pipeline could stand up a playable world, but the brief moved on before it was sliced into reviewable history. It is kept here as the honest origin point; it has no remote and was superseded by VANGUARD.",
+      "failures": [
+        "Shipped as one large commit rather than sliced per-feature — the only repo in this lineage without a clean per-step history.",
+        "Neon/synthwave aesthetic was the first thing Jordan rejected later ('proper AI slop'); the brand had not yet been defined."
+      ],
+      "commits": [
+        {
+          "sha": "a287ff0",
+          "date": "2026-08-05",
+          "author": "agent",
+          "subject": "Driftrun v1: neon canyon hover racer",
+          "note": "Genesis commit. A hover racer stood up on the Genex + three.js pipeline. The whole game landed in one changeset."
+        }
+      ]
+    },
+    {
+      "id": "vanguard",
+      "name": "Phase 1 — VANGUARD: the 30-wave build",
+      "repo": "vanguard",
+      "status": "Shipped",
+      "range": "2026-08-05 → 2026-08-06",
+      "summary": "VANGUARD is the game that became the studio's working method: build in named 'Waves', each Wave a single reviewable unit, each critic round a named follow-through. The first deploy did NOT pass the bar — Jordan loaded in to LUM:0.000, a watchdog hang, enemies that never shot, and two fake achievements we had shipped by mistake. Every one of those became a named Wave fix. We did not claim 'done' until the game actually rendered and played.",
+      "failures": [
+        "First deploy rendered black on Genex (LUM:0.000) — boot threw before WebGL; fixed by rebuilding the splash/loader (Wave 3).",
+        "Watchdog: a frame took >1s — the renderer had hung; traced through the critic rounds.",
+        "Enemies 'never shoot' — fixed in Wave 6 (spawn placement, hunt activation, LOS).",
+        "Two fake achievements were shipped, then removed in Wave 4 fix set.",
+        "Stat bars were inverted (shorter = worse) — fixed in Wave 2 fix (invert reload/ADS bars).",
+        "loaderPlan(9) did not match 9 loaderStep calls — fixed in Wave 3 fix (clean stagger indices)."
+      ],
+      "commits": [
+        {
+          "sha": "3afd6be",
+          "date": "2026-08-05",
+          "author": "Rune",
+          "subject": "Wave 1: progression core — XP/levels, level-gated unlocks, guest+account auth, achievements, stats, attachment customization, gun-stats panel, post-match progression readout, account screen",
+          "note": "Foundation: the meta-loop that makes a run mean something after death."
+        },
+        {
+          "sha": "b1f6b17",
+          "date": "2026-08-05",
+          "author": "Rune",
+          "subject": "Wave 2: loadout creator (Primary/Secondary/Perk1-3/Lethal/Tactical/Operator) + live gun-stats panel + attachment picker + Operators screen with level-gated roster",
+          "note": "CoD-style class builder with a live stats panel."
+        },
+        {
+          "sha": "533faca",
+          "date": "2026-08-05",
+          "author": "Rune",
+          "subject": "Wave 3 design contract: exact loader/online/achievements/leaderboard/lobby hooks for builder",
+          "note": "Locked the contract so the next waves had exact hooks to hit."
+        },
+        {
+          "sha": "1c65b05",
+          "date": "2026-08-05",
+          "author": "Rune",
+          "subject": "Wave 2 fix: invert reload/ADS stat bars (shorter=better) + refresh operators hero on loadout change",
+          "note": "Stat bars were backwards — shorter is better, not worse."
+        },
+        {
+          "sha": "7649037",
+          "date": "2026-08-05",
+          "author": "Rune",
+          "subject": "Wave 2 fix: dispatch vanguard:loadout-changed from loadout equip/attachment + guard operators listener (closes stale-hero bug)",
+          "note": "The operator hero could show a stale loadout; listener now guarded."
+        },
+        {
+          "sha": "14f563d",
+          "date": "2026-08-05",
+          "author": "By JTT",
+          "subject": "Add CI build gate, README, and Gauntlet PROGRESS.md audit log",
+          "note": "Quality gate + the audit trail the Gauntlet loop writes into."
+        },
+        {
+          "sha": "573f6f9",
+          "date": "2026-08-05",
+          "author": "Rune",
+          "subject": "Wave 3: branded splash/loader (real progress + build tag), home online count, achievements screen, leaderboard, lobby chat",
+          "note": "Rebuilt the cold-open after the black-screen deploy; now shows real boot progress."
+        },
+        {
+          "sha": "370bf4d",
+          "date": "2026-08-05",
+          "author": "Rune",
+          "subject": "Wave 3 fix: loaderPlan(9) matches 9 loaderStep calls + clean stagger indices (no collisions)",
+          "note": "Loader step count was inconsistent — boot could hang on a missing step."
+        },
+        {
+          "sha": "0573f71",
+          "date": "2026-08-05",
+          "author": "Rune",
+          "subject": "Wave 4 fix set: removed 2 fake achievements, per-life longestLife, auth-switch refresh, version.json BASE_URL fetch",
+          "note": "Two achievements were faked; removed. Auth-switch and version fetch hardened."
+        },
+        {
+          "sha": "e57b01a",
+          "date": "2026-08-05",
+          "author": "By JTT",
+          "subject": "Wave 5: coastal flagship map, stance HUD, death report + killcam, asset library",
+          "note": "First real map, the death report, and the seed of the asset library."
+        },
+        {
+          "sha": "bb38b87",
+          "date": "2026-08-05",
+          "author": "By JTT",
+          "subject": "Wave 6: enemies fight back — spawn placement + hunt activation + LOS fix",
+          "note": "Enemies had never shot. Now they spawn, hunt, and fire with line-of-sight."
+        },
+        {
+          "sha": "b62850b",
+          "date": "2026-08-05",
+          "author": "By JTT",
+          "subject": "Wave 6b: ADS iron-sight alignment — red-dot sits dead on the crosshair",
+          "note": "Aim-down-sight now aligns the dot to the crosshair."
+        },
+        {
+          "sha": "51589e6",
+          "date": "2026-08-05",
+          "author": "By JTT",
+          "subject": "Wave 7: 5 custom loadout slots (CoD classes) + ADS sight alignment",
+          "note": "Saved loadout classes, sight alignment carried through."
+        },
+        {
+          "sha": "edf27df",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 8: live operator 3D preview + class-system transparency",
+          "note": "Operators get a live 3D preview so the roster is legible."
+        },
+        {
+          "sha": "44719ad",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 8b: operator preview hardened + operators screen restored",
+          "note": "Preview hardened after edge cases broke it."
+        },
+        {
+          "sha": "f1f28e2",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 9: procedural player footsteps (no credits)",
+          "note": "Footsteps synthesized in-engine — no asset licences."
+        },
+        {
+          "sha": "2d01ce2",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 10: primary objective — clear the outpost + win condition",
+          "note": "The run now has a goal and a win state."
+        },
+        {
+          "sha": "1c6711d",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 11: enemy contact alert audio (procedural, no credits)",
+          "note": "You hear contact before you see it."
+        },
+        {
+          "sha": "8f0ce33",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 12: enemies fire through cover — fix \"they never shoot\"",
+          "note": "Cover no longer makes enemies passive; they suppress through it."
+        },
+        {
+          "sha": "1b6e8fb",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 13: gun at hip carries muzzle-down, never \"points up\"",
+          "note": "Hip-carry pose no longer reads as aiming at the player."
+        },
+        {
+          "sha": "ece6b17",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 14: menu no longer overflows short windows",
+          "note": "Menus scroll/scale instead of clipping on small screens."
+        },
+        {
+          "sha": "b7457ef",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "DESIGN.md: build plan reflects reality (full working loop)",
+          "note": "Design doc rewritten to match what actually shipped."
+        },
+        {
+          "sha": "b5225e1",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 15: live generated rifle replaces the placeholder box + free-asset lane opened",
+          "note": "Placeholder cube becomes a generated rifle; the free-asset lane opens."
+        },
+        {
+          "sha": "ddd2b56",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 16: in-hand gun matches your loadout (rifle vs SMG) + SMG asset wired",
+          "note": "What you carry is what you hold."
+        },
+        {
+          "sha": "ab8b5cf",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 17: per-weapon recoil personality — closes critic gap \"9 skins on one gun\"",
+          "note": "Each weapon gets distinct recoil; the critic's 'one gun, nine skins' gap closes."
+        },
+        {
+          "sha": "3718c02",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 17b: per-weapon shot audio — SMG sharp/fast, DMR thumps deep/loud",
+          "note": "Shot sound matches the weapon's character."
+        },
+        {
+          "sha": "9f283aa",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 17c: kill-confirmation tone — every drop chimes",
+          "note": "A kill confirms with a tone, not just a number."
+        },
+        {
+          "sha": "ed063b5",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 18: real weapon damage bridge — DMR ≠ SMG per shot (critic round 2)",
+          "note": "Critic round 2: per-shot damage now differs by weapon class."
+        },
+        {
+          "sha": "d53f376",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 19: enemy hit-flinch — hostiles stagger when shot (CoD hit-reaction)",
+          "note": "Shooting an enemy reads — they stagger on hit."
+        },
+        {
+          "sha": "bf4f419",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 20: player screenshot fixes — reload anim, armed soldiers, SMG ADS",
+          "note": "Screenshot pass: reload animation, armed silhouettes, SMG ADS."
+        },
+        {
+          "sha": "4fa19fc",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 21: deploy streak — the game's point (how far can you go)",
+          "note": "The run's real goal surfaces: how long can you keep deploying."
+        },
+        {
+          "sha": "920e879",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 22: rigged soldiers carry rifles (silhouette armed + pose-rotated)",
+          "note": "Soldiers are armed and posed, not holding nothing."
+        },
+        {
+          "sha": "4441e0b",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 23: zone damage actually applies + hit-stop weight (critic round 3)",
+          "note": "Critic round 3: zone damage was not applying; now it does, with hit-stop weight."
+        },
+        {
+          "sha": "62ce6ef",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 24: cover actually protects you + extraction phase (critic round 4)",
+          "note": "Critic round 4: cover now works; extraction phase added."
+        },
+        {
+          "sha": "84620a9",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 25: Asset Library live — 3D weapon gallery (visual asset viewer)",
+          "note": "The asset library becomes a browsable 3D gallery."
+        },
+        {
+          "sha": "400c221",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 26: incoming-fire feedback — wall impacts + bullet whiz (critic follow-through)",
+          "note": "Critic follow-through: you feel incoming fire via impacts and whiz."
+        },
+        {
+          "sha": "059ddeb",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 27: custom marketing website — VANGUARD landing + press kit",
+          "note": "The game gets its own marketing site and press kit."
+        },
+        {
+          "sha": "7b3a95f",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 28: live HUD deploy-streak chip",
+          "note": "Deploy streak shown live in the HUD."
+        },
+        {
+          "sha": "2fa73fe",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 29: NavGrid A* wired in — enemies flank instead of grinding in walls",
+          "note": "Enemies path with A* and flank instead of sticking to walls."
+        },
+        {
+          "sha": "43e519d",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Wave 30: remove wall-hack enemy marker — threat location is earned",
+          "note": "The enemy marker that revealed everything is gone; threat is now earned."
+        }
+      ]
+    },
+    {
+      "id": "ashenreach",
+      "name": "Phase 2 — Ashenreach: the one-shot RPG",
+      "repo": "ashenreach",
+      "status": "Live",
+      "range": "2026-08-06 → 2026-08-07",
+      "summary": "Ashenreach is the mature build: a complete open-world action RPG, generated from the highland up, with its own asset viewer, procedural assets, marketing site, GDD, and QA harness. It shipped as one large foundation commit, then was refined in transparent Tiers and Gauntlet rounds. The Gauntlet critic was honest: TIE-with-caveat on combat weight, LOSE on scope/fidelity vs. CoD-scale shooters. We documented the gap instead of hiding it — the gate for a browser-native RPG is 'does it render, play, and respect the player,' and it does (VERDICT=PASS, 28/28 tests, live boot).",
+      "failures": [
+        "Gauntlet critic verdict: TIE/LOSE on shooter scope — documented, not claimed as a win.",
+        "Off-theme models (duck, boombox) were added then dropped for brand cohesion (commit 6e4a2e7).",
+        "Stray Poly Haven test artifacts committed then removed (commit 7e81879).",
+        "Loading screen masked world build — fixed (commit 6e4a2e7).",
+        "Camera pitch could flip upside-down — clamped (commit 06e2e08)."
+      ],
+      "commits": [
+        {
+          "sha": "b194830",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Ashenreach: complete browser RPG — game, asset viewer, procedural assets, marketing site, GDD, QA harness; GitHub Apps + SEO setup",
+          "note": "The one-shot foundation: a full game plus site, viewer, GDD, QA, and repo hygiene in a single changeset."
+        },
+        {
+          "sha": "a239395",
+          "date": "2026-08-06",
+          "author": "By JTT",
+          "subject": "Tier 1 (multi-agent): free CC0 rigs in gameplay (Fox/CesiumMan ambient), glaive weapon archetype, 3 procedural audio cues (embertide swell, soul-bank chime, parry clang)",
+          "note": "First agent tier: living world rigs, a new weapon, and procedural audio cues."
+        },
+        {
+          "sha": "d6d15d5",
+          "date": "2026-08-07",
+          "author": "By JTT",
+          "subject": "Tier 2 (multi-agent): Colossus 3-phase boss escalation, mobile joystick + safe-area polish, 2 new side quests (ashbridge, wakecall) + codex",
+          "note": "The boss gets real phases; mobile controls and quests land."
+        },
+        {
+          "sha": "158b857",
+          "date": "2026-08-07",
+          "author": "By JTT",
+          "subject": "Tier 3 (multi-agent): winter biome variant (Palette+Tterrain+WorldRenderer), relic inventory + equip HUD, localStorage score leaderboard. Fixed BiomeVariant literal-type errors.",
+          "note": "A second biome, relic HUD, and a local leaderboard; type errors fixed."
+        },
+        {
+          "sha": "a2c576c",
+          "date": "2026-08-07",
+          "author": "By JTT",
+          "subject": "Tier 4 (wiring): biome choice in run-start UI + Game/Terrain/WorldRenderer threading; relic HUD wired to equip/discard via syncRelicHud; T4-C score leaderboard already live via core/Save. Verified winter biome boots.",
+          "note": "Biome choice wired into the run; relic HUD connected; winter biome verified to boot."
+        },
+        {
+          "sha": "bbe7c97",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "SEO/AIO + Gauntlet R2/R3 partial: Vercel links, robots/sitemap/llms, JSON-LD, accent/audio/contrast",
+          "note": "Search + AI-optimization: robots, sitemap, llms.txt, JSON-LD, a11y contrast."
+        },
+        {
+          "sha": "e64eb9e",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Brand cohesion: map canvas graphite+palegold objectives, BRAND.md identity system",
+          "note": "One locked palette across game and site; BRAND.md becomes the source of truth."
+        },
+        {
+          "sha": "06e2e08",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Boss fixes: camera pitch clamp (no upside-down), onboarding lore+voice, palegold map, BRAND.md",
+          "note": "Camera can no longer flip; onboarding gets lore and voice."
+        },
+        {
+          "sha": "d54947c",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Gauntlet R2/3 completed in-session: parry accent juice wired, lookout/cache/hazard POIs, VIEW_CHUNKS perf, denser fog",
+          "note": "Gauntlet rounds 2/3: parry juice, POIs, chunk perf, atmosphere."
+        },
+        {
+          "sha": "ecb8b6d",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Movement feel: snappier accel/decel, footstep audio cadence + ash puff, camera dash lead",
+          "note": "Movement gets weight: snappier accel, footstep cadence, dash lead."
+        },
+        {
+          "sha": "aa869c3",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Combat weight: hit-stop freeze on player weapon hits (55ms normal / 110ms crit)",
+          "note": "Hits freeze the frame — 55ms normal, 110ms on crit."
+        },
+        {
+          "sha": "9cb4bab",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Boss escalation: adaptive music ramps with fight, phase-3 climax lore+voice, tension drop on victory",
+          "note": "Music adapts to the boss; phase 3 climaxes with lore and voice."
+        },
+        {
+          "sha": "cab6a8a",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Weapon feel: per-archetype hit-stop + screen shake (maul lands heavy, blade crisp)",
+          "note": "Each weapon feels different on impact — maul heavy, blade crisp."
+        },
+        {
+          "sha": "ddfb255",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Enemy telegraph VFX: wind-up ember/rust glow so attacks read by sight, not just sound",
+          "note": "Enemy wind-ups glow so you can read attacks visually."
+        },
+        {
+          "sha": "d151458",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "World density: roaming fox herd (free Khronos rigs) + higher foliage scatter",
+          "note": "The world feels alive: roaming foxes, denser foliage."
+        },
+        {
+          "sha": "45f8f58",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Always-on objective banner (top-center, brand palegold) so direction is never lost",
+          "note": "An objective banner keeps the player oriented."
+        },
+        {
+          "sha": "afd3389",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Gauntlet Round A: weapon swing-arc VFX (pooled slash, per-weapon tint)",
+          "note": "Swing arcs get pooled, tinted VFX per weapon."
+        },
+        {
+          "sha": "c4dfffe",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "PROGRESS.md: Gauntlet Round A receipt",
+          "note": "The Gauntlet receipt is written into PROGRESS.md."
+        },
+        {
+          "sha": "6e4a2e7",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Fix: branded loading screen masks world build; drop off-theme duck/boombox models",
+          "note": "Loading screen no longer hid the world; off-brand models removed."
+        },
+        {
+          "sha": "6f3bc5a",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Visual critic round: branded menu backdrop, rim light for silhouette pop, exposure boost (local BLIP critic self-run)",
+          "note": "A visual critic pass: backdrop, rim light, exposure."
+        },
+        {
+          "sha": "d175d22",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "Leverage-everything round: CC0 ground texture + derived normal map (kills flat low-poly), swing-FX slash fix, neural-voice narration via edge-tts (replaces robotic SpeechSynthesis)",
+          "note": "Quality lift: CC0 ground + derived normal map, slash fix, neural voice."
+        },
+        {
+          "sha": "7e81879",
+          "date": "2026-08-07",
+          "author": "Rune",
+          "subject": "chore: remove stray Poly Haven test artifacts",
+          "note": "Cleanup of stray test assets."
+        }
+      ]
+    }
+  ]
+};
