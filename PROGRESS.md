@@ -25,3 +25,10 @@ Critic evidence = real output: the e2e harness HUD metrics (LUM / FPS / frame / 
 ## Open
 - Full Gauntlet critic blind A/B loop (Rounds 1-4 evidence) not yet re-run as a single consolidated pass; e2e critic gates pass per-round. Next: one consolidated harsh critic over the live build, loop to output-wins if gaps remain.
 - Folder rename still parked (needs Hermes terminal restart to free cwd lock).
+
+## Gauntlet Round A — swing-arc VFX (2026-08-07)
+- Builder: in-session terminal/Node. New src/systems/SwingFx.ts (pooled additive ring-arc, per-weapon tint) wired into Game.onSwing + frame loop. Reuses CharacterRig weapon anchor + PALETTE; no new assets.
+- Reference bar: ARCHITECTURE.md (Hyper Light Drifter / Deaths Door / Valheim / Diablo IV).
+- Critic (code-arch + user eyes; vision API down): micro-feedback audit found foundation already deep (damage numbers, tiered blood/bone bursts, ember rings, hit+hurt flash, hit-stop, shake, parry flash, death FX, soul spill, low-HP vignette, wind ambient). Real gap = no visible slash during swing; SwingFx closes it.
+- Verdict: gap closed (slash reads on miss+hit, weapon-tinted). Visual A/B = USER FINAL JUDGE (vision_analyze API blocked upstream).
+- Evidence: tsc clean, 28/28 tests, build OK, e2e PASS (LUM 0.305, 66 colors, 0 errors, 10 enemies), build afd3389.
