@@ -588,6 +588,9 @@ export class Game {
   private damageEnemy(e: Enemy, damage: number, crit: boolean): void {
     e.hp -= damage;
     e.flashT = 0.14;
+    // Hit-stop sells weight: a brief global freeze on impact (proven JuiceSystem
+    // timeScale freeze). Longer on crits so they land with real punch.
+    this.juice.hitStop(crit ? 110 : 55);
     e.staggerT = Math.max(e.staggerT, crit ? 0.34 : 0.16);
     // Knockback reads as impact and creates spacing.
     const away = new THREE.Vector3(e.pos.x - this.player.pos.x, 0, e.pos.z - this.player.pos.z)
