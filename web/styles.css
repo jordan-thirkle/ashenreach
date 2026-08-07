@@ -58,21 +58,30 @@ img { max-width: 100%; display: block; }
 .bearer { color: var(--palegold); font-size: 0.78rem; border-left: 1px solid rgba(201,162,39,0.4); padding-left: 0.8rem; }
 
 /* ---- Hero ---- */
-.hero { position: relative; min-height: 94vh; display: grid; place-items: center; overflow: hidden; text-align: center; }
+.hero { position: relative; min-height: 96vh; display: grid; place-items: center; overflow: hidden; text-align: center; isolation: isolate; }
+.hero-bg { position: absolute; inset: -8%; z-index: 0; background:
+    radial-gradient(70% 55% at 50% 30%, #241a14 0%, #14110e 55%, #0c0d0e 100%),
+    radial-gradient(40% 40% at 70% 75%, rgba(217,118,58,0.12), transparent 70%);
+  will-change: transform; }
 .hero-shot {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-  opacity: 0.42; filter: saturate(0.85) contrast(1.05) brightness(0.7);
-  transform: scale(1.05);
+  position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: cover;
+  opacity: 0.5; filter: saturate(0.9) contrast(1.08) brightness(0.66);
+  will-change: transform; z-index: 0;
 }
-.hero-veil {
-  position: absolute; inset: 0;
+.hero-grain { position: absolute; inset: 0; z-index: 1; opacity: 0.05; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.hero-veil { position: absolute; inset: 0; z-index: 1;
   background:
-    radial-gradient(120% 80% at 50% 22%, rgba(14,16,18,0.2), rgba(14,16,18,0.82) 76%),
-    linear-gradient(180deg, rgba(14,16,18,0.55), rgba(14,16,18,0.15) 38%, rgba(14,16,18,0.95)),
-    radial-gradient(60% 50% at 50% 60%, rgba(217,118,58,0.10), transparent 70%);
-}
-#ash { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero-inner { position: relative; z-index: 2; max-width: 780px; padding: 2rem 1.4rem; }
+    radial-gradient(110% 75% at 50% 28%, rgba(14,16,18,0.15), rgba(14,16,18,0.8) 74%),
+    linear-gradient(180deg, rgba(14,16,18,0.5), rgba(14,16,18,0.1) 36%, rgba(14,16,18,0.96)),
+    radial-gradient(55% 45% at 50% 64%, rgba(217,118,58,0.14), transparent 70%); }
+#ash { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+.hero-inner { position: relative; z-index: 3; max-width: 820px; padding: 2rem 1.4rem; will-change: transform; }
+.cairn-mark { display: block; width: 64px; height: 64px; margin: 0 auto 1.4rem;
+  background: var(--ember); clip-path: polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  filter: drop-shadow(0 0 26px rgba(217,118,58,0.85)) drop-shadow(0 0 60px rgba(217,118,58,0.4));
+  animation: cairnPulse 4s ease-in-out infinite; }
+@keyframes cairnPulse { 0%,100%{ transform: scale(1); filter: drop-shadow(0 0 22px rgba(217,118,58,0.7)); } 50%{ transform: scale(1.08); filter: drop-shadow(0 0 40px rgba(217,118,58,0.95)); } }
 .eyebrow { color: var(--rust-bright); letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.68rem; margin: 0 0 1.2rem; font-weight: 600; }
 .hero h1 {
   font-size: clamp(2.8rem, 8.5vw, 5.6rem); line-height: 1.0; letter-spacing: -0.02em;

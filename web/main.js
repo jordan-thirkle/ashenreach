@@ -85,6 +85,28 @@
       '<p class="run-empty" style="margin-top:1rem">Open the game and your run continues from here. One save, one bearer, everywhere on this device.</p>';
   }
 
+
+  // --- Cursor-reactive parallax (game-site depth) ---
+  const hero = document.querySelector('.hero');
+  if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const layers = [...hero.querySelectorAll('[data-depth]')];
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      tx = (e.clientX - r.left) / r.width - 0.5;
+      ty = (e.clientY - r.top) / r.height - 0.5;
+    });
+    hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+    (function loop() {
+      cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06;
+      for (const el of layers) {
+        const d = parseFloat(el.getAttribute('data-depth') || '0');
+        el.style.transform = 'translate3d(' + (cx * d * 26) + 'px,' + (cy * d * 26) + 'px,0)';
+      }
+      requestAnimationFrame(loop);
+    })();
+  }
+
   renderIdentity();
   // The game may finish loading a save after this page mounts.
   window.addEventListener('storage', renderIdentity);
