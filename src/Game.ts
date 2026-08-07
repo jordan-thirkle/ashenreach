@@ -522,6 +522,7 @@ export class Game {
       );
       nearestEnemyDist = Math.min(nearestEnemyDist, e.distToPlayer);
       if (e.flashT > 0) this.tintRig(e);
+      else if (e.telegraphT > 0) this.telegraphRig(e);
     }
     this.camera.setCombatFraming(nearestEnemyDist < 22);
     this.spawner.update(dt, this.player.pos.x, this.player.pos.z,
@@ -721,6 +722,22 @@ export class Game {
       if (o instanceof THREE.Mesh) {
         const m = o.material as THREE.MeshStandardMaterial;
         if (m.emissive) m.emissiveIntensity = 0.2 + k * 2.6;
+      }
+    });
+  }
+
+  // Wind-up tell: enemies glow ember/rust while telegraphing an attack, so
+  // strikes are readable by SIGHT not just sound. Reuses tintRig's traversal.
+  private telegraphRig(e: Enemy): void {
+    const max = e.telegraphMax > 0 ? e.telegraphMax : 0.6;
+    const k = Math.min(1, e.telegraphT / max);
+    e.rig.root.traverse((o) => {
+      if (o instanceof THREE.Mesh) {
+        const m = o.material as THREE.MeshStandardMaterial;
+        if (m.emissive) {
+          m.emissive.setHex(PALETTE.rustBright);
+          m.emissiveIntensity = 0.15 + (1 - k) * 1.9;
+        }
       }
     });
   }

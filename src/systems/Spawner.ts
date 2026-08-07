@@ -58,6 +58,7 @@ export function makeEnemy(
     flashT: 0,
     staggerT: 0,
     telegraphT: 0,
+    telegraphMax: 0,
     alive: true,
     soulValue: def.boss ? 12 : def.elite ? 3 : 1,
     lastAttack: 0,

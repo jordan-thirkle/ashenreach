@@ -27,6 +27,7 @@ export interface Enemy {
   flashT: number;
   staggerT: number;
   telegraphT: number;
+  telegraphMax: number;
   alive: boolean;
   soulValue: number;
   lastAttack: number;
@@ -161,6 +162,7 @@ export function updateEnemy(
       if (dist < e.def.attackRange * (tune?.reach ?? 1) && e.cooldown <= 0) {
         setState(e, 'attack');
         e.telegraphT = telegraphTimeFor(e);
+        e.telegraphMax = e.telegraphT;
         e.sweepT = 0;
         onTelegraph(e);
         break;
