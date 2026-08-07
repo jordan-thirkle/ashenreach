@@ -17,6 +17,7 @@ export class AudioEngine {
   private ambientSrc: AudioBufferSourceNode | null = null;
   private started = false;
   private settings: Settings;
+  private voiceManifest: Record<string, string> = {};
   private step = 0;
   private intensity = 0;
   private lastSfx = new Map<string, number>();
@@ -40,6 +41,9 @@ export class AudioEngine {
 
   constructor(settings: Settings) {
     this.settings = settings;
+    // Pre-generated neural-voice narration (edge-tts). Falls back to
+    // speechSynthesis when a line isn't pre-baked.
+    fetch('/voice/manifest.json').then((r) => r.json()).then((m) => { this.voiceManifest = m; }).catch(() => {});
   }
 
   get ready(): boolean {
@@ -646,6 +650,19 @@ export class AudioEngine {
    */
   narrate(text: string): void {
     if (!this.settings.voiceover) return;
+    // Prefer a pre-generated neural-voice line (edge-tts, natural narrator)
+    // over the robotic built-in SpeechSynthesis voice.
+    const file = this.voiceManifest[text];
+    if (file) {
+      const a = new Audio('/voice/' + file);
+      a.volume = 0.9;
+      a.play().catch(() => this.speakFallback(text));
+      return;
+    }
+    this.speakFallback(text);
+  }
+
+  private speakFallback(text: string): void {
     const synth = window.speechSynthesis;
     if (!synth) return;
     try {

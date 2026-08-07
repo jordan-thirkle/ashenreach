@@ -73,6 +73,42 @@ function buildChunkGeometry(
   return geo;
 }
 
+// Derive a tangent-space normal map from a loaded albedo (Sobel on luminance).
+// Avoids shipping a separate normal texture while still giving the ground real
+// surface relief - directly answers the "flat low-poly" critic callout.
+function deriveNormalMap(src: HTMLImageElement): THREE.CanvasTexture {
+  const w = src.naturalWidth, h = src.naturalHeight;
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d')!;
+  ctx.drawImage(src, 0, 0);
+  const data = ctx.getImageData(0, 0, w, h).data;
+  const out = ctx.createImageData(w, h);
+  const lum = (x: number, y: number) => {
+    x = (x + w) % w; y = (y + h) % h;
+    const i = (y * w + x) * 4;
+    return 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+  };
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const dx = lum(x - 1, y) - lum(x + 1, y);
+      const dy = lum(x, y - 1) - lum(x, y + 1);
+      const nx = dx, ny = dy, nz = 2.0;
+      const len = Math.hypot(nx, ny, nz) || 1;
+      const i = (y * w + x) * 4;
+      out.data[i] = ((nx / len) * 0.5 + 0.5) * 255;
+      out.data[i + 1] = ((ny / len) * 0.5 + 0.5) * 255;
+      out.data[i + 2] = ((nz / len) * 0.5 + 0.5) * 255;
+      out.data[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(out, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.NoColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+
 export class WorldRenderer {
   readonly scene: THREE.Scene;
   readonly lib: MeshLibrary;
@@ -119,8 +155,27 @@ export class WorldRenderer {
     this.ambient = new AmbientRigs(scene, terrain);
 
     this.terrainMat = new THREE.MeshStandardMaterial({
-      vertexColors: true, roughness: 0.97, metalness: 0.0, flatShading: true,
+      vertexColors: true, roughness: 0.94, metalness: 0.0, flatShading: false,
     });
+    // CC0 weathered-ground albedo (three.js examples, CC-BY) + a normal map
+    // derived from it, so the terrain has real surface relief instead of flat
+    // vertex colour. Texture multiplies the biome vertex tint, so biome
+    // variation is preserved.
+    const groundTex = new THREE.TextureLoader().load(
+      '/textures/ground_albedo.jpg',
+      (tex) => {
+        const nm = deriveNormalMap(tex.image as HTMLImageElement);
+        nm.repeat.set(12, 12);
+        this.terrainMat.normalMap = nm;
+        this.terrainMat.normalScale = new THREE.Vector2(0.9, 0.9);
+        this.terrainMat.needsUpdate = true;
+      }
+    );
+    groundTex.wrapS = groundTex.wrapT = THREE.RepeatWrapping;
+    groundTex.repeat.set(12, 12);
+    groundTex.colorSpace = THREE.SRGBColorSpace;
+    this.terrainMat.map = groundTex;
+    this.terrainMat.needsUpdate = true;
 
     // Sky dome: gradient shader, no texture, correct for a burned overcast.
     const skyGeo = new THREE.SphereGeometry(1600, 24, 16);

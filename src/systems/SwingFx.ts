@@ -32,7 +32,7 @@ export class SwingFx {
   private acquire(): Swing {
     const s = this.pool.pop();
     if (s) return s;
-    const geo = new THREE.RingGeometry(1.0, 1.22, 28, 1, Math.PI * 0.5, Math.PI);
+    const geo = new THREE.RingGeometry(0.92, 1.5, 32, 1, Math.PI * 0.35, Math.PI * 0.8);
     const mat = new THREE.MeshBasicMaterial({
       color: PALETTE.palegold,
       transparent: true,
@@ -57,10 +57,12 @@ export class SwingFx {
     const tall = 0.7 + Math.min(1.4, arc / Math.PI); // wider weapon arc => taller slash
     s.mesh.scale.set(scale, scale * tall, scale);
     s.mesh.position.set(pos.x, pos.y + 1.15, pos.z);
-    // Face the arc along the swing direction (forward = facing).
-    s.mesh.rotation.set(Math.PI / 2, 0, -facing);
+    // Ring geometry lies in the XY plane; rotate X by 90deg to lay it flat on
+    // the ground, then yaw around world Y so the slash faces the swing bearing.
+    s.mesh.rotation.set(Math.PI / 2, 0, 0);
+    s.mesh.rotation.y = -facing;
     s.mesh.visible = true;
-    s.mat.opacity = 0.85;
+    s.mat.opacity = 0.5; // translucent slash, not a solid wedge
     this.active.push(s);
   }
 
@@ -69,8 +71,8 @@ export class SwingFx {
       const s = this.active[i];
       s.life -= dt;
       const k = Math.max(0, s.life / s.max);
-      s.mat.opacity = 0.85 * k * k;
-      s.mesh.rotation.z += dt * 6; // slight sweep so the slash reads as motion
+      s.mat.opacity = 0.5 * k * k;
+      s.mesh.rotation.y += dt * 6; // slight sweep so the slash reads as motion
       if (s.life <= 0) {
         s.mesh.visible = false;
         s.mat.opacity = 0;
