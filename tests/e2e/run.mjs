@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
-const PORT = 4173;
+const PORT = Number(process.env.E2E_PORT)||4173;
 const EXE = 'C:/Users/jorda/AppData/Local/ms-playwright/chromium-1234/chrome-win64/chrome.exe';
 
 const MIME = {
