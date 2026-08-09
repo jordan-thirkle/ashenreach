@@ -1,0 +1,12 @@
+# Normalize line endings for the shared tree — both agents (Hermes + Command Code) edit this repo.
+* text=auto
+*.ts text eol=lf
+*.mjs text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.mp3 binary
+*.png binary
+*.jpg binary

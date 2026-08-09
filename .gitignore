@@ -38,3 +38,7 @@ tmp/
 tests/e2e/REPORT.md
 tests/e2e/metrics.json
 tests/e2e/report.json
+
+# agent temp scripts
+cap_*.mjs
+shot_*.mjs

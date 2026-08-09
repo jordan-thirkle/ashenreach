@@ -49,3 +49,10 @@ docs/BRAND.md = brand lock. PROGRESS.md = gauntlet receipts.
 - Validate real gameplay (boot a match, LUM>0) before claiming done.
 - Don't fake a backend login — identity is localStorage, shared game<->site.
 - Commit + push when not active; don't leave the build red.
+
+## Shared-repo protocol (Hermes + Command Code CLI)
+- One tree, one origin (github.com/jordan-thirkle/ashenreach). Disk writes share instantly; PUSH is for Vercel/CI/backup.
+- Before editing src/: `git pull --rebase` and read `.hermes/HANDOFF.md`. Record your lane there if you start a src/ edit.
+- Commit per logical chunk; push after each chunk. Never force-push. Never hand-edit node_modules.
+- Keep `git status` truthful: temp scripts guarded (cap_*.mjs), regenerated e2e reports gitignored, CRLF normalized (.gitattributes).
+- Camera: LIVE VERIFIED above:true (2026-08-10). Do not revert the pitch clamp.
