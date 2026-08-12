@@ -2,37 +2,32 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
-  build-test:
-    name: Build, typecheck, unit tests
+  build:
+    name: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
-
       - run: npm ci
-
-      - name: Typecheck
-        run: npx tsc --noEmit
-
-      - name: Unit tests
-        run: npx vitest run
-
-      - name: Build
-        run: npm run build
-
-      - name: Upload dist
-        if: github.ref == 'refs/heads/master'
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-          retention-days: 7
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - name: Verify Vercel output exists
+        shell: bash
+        run: test -s .vercel/output/config.json
