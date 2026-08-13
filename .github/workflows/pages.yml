@@ -1,8 +1,12 @@
+# Disabled: Vercel handles all deployments for ashenreach.
+# CI workflow already verifies Vercel output exists.
+# This GitHub Pages deployment is redundant.
 name: Pages
 
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,24 +19,9 @@ concurrency:
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    name: Disabled (Vercel handles deployments)
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-      - run: npm run build
-
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - run: echo "Deployments handled by Vercel"
